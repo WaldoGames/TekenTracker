@@ -9,7 +9,7 @@ namespace Core.Classes.DTO
 {
     public class OverviewManyPostsDto
     {
-        public List<PostSimpleDto> Posts { get; set; }
-        public List<Tag>? UsedTags { get; set; }
+        public List<PostDto> Posts { get; set; }
+        public List<int>? UsedTags { get; set; }
     }
 }

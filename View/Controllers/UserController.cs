@@ -10,25 +10,24 @@ using View.Models;
 
 namespace View.Controllers
 {
-    public class UserController : Controller
+    public class UserController : LoggedinControllerBase
     {
         //return View("~/Views/Wherever/SomeDir/MyView.aspx")
         // GET: UserController
         UserService userService = new UserService(new UserRepository());
         SessionController sessionController;
-
-        public UserController(IMemoryCache cache)
+        public UserController(IMemoryCache cache):base(cache) 
         {
             sessionController = new SessionController(cache);
         }
         public ActionResult Index()
         {
-            if (sessionController.GetUserFromSession(out UserDto dto) && userService.ChecKLoginStatus(dto))
+            if (!CheckLogin(out ActionResult LoginView))
             {
-                return RedirectToAction("LogedIn");
+                return View();
             }
 
-            return View();
+            return View("LogedIn");
             
         }
         [HttpPost]

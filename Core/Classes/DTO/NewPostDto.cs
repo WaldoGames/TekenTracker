@@ -11,10 +11,8 @@ namespace Core.Classes.DTO
     {
         public string Title { get; set; }
         public string ImageUrl { get; set; }
-        public User Poster { get; set; }
-        public List<Tag>? Tags { get; set; }
-
+        public int Poster { get; set; }
         public List<NewSubimageDto>? SubImages { get; set; }
-        public List<NewNoteDto>? Notes { get; set; }
+        public string? Notes { get; set; }
     }
 }

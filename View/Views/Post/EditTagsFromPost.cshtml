@@ -1,0 +1,52 @@
+﻿@model View.Models.TagEditViewModel
+
+@{
+    ViewData["Title"] = "EditTagsFromPost";
+}
+
+<h1>TagEdit</h1>
+
+<h4>TestModelTagEdit</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="EditTagsFromPost" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <h2>Tags</h2>
+            @foreach (var tag in ViewBag.Tags as List<Core.Classes.Models.Tag>)
+            {
+                <div>
+                    <label>
+                        <input type="checkbox" name="TagIds" value="@tag.tagId"
+                        @(Model.TagIds != null && Model.TagIds.Contains(tag.tagId) ? "checked" : "") />
+                        @tag.name
+                    </label>
+                </div>
+            }
+            <br/>
+            <h2>Verbeter punten</h2>
+            @foreach (var tag in ViewBag.ImprovementTags as List<Core.Classes.Models.Tag>)
+            {
+                <div>
+                    <label>
+                        <input type="checkbox" name="TagIds" value="@tag.tagId"
+                        @(Model.TagIds != null && Model.TagIds.Contains(tag.tagId) ? "checked" : "") />
+                        @tag.name
+                    </label>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

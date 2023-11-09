@@ -11,6 +11,11 @@ namespace Core.Classes.Services
     internal class SubimageService
     {
         ISubImageRepository SubimageRepository;
+
+        public SubimageService(ISubImageRepository subImageRepository)
+        {
+            SubimageRepository = subImageRepository;
+        }
         public bool TryAddNewSubimage(NewSubimageDto subimageDto)
         {
             return SubimageRepository.TryAddNewSubimage(subimageDto.postId, subimageDto.imageUrl);

@@ -1,4 +1,6 @@
 ﻿using Core.Classes.DTO;
+using Core.Interfaces.Repository;
+using Dal.Classes.RepositoryImplementations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
@@ -16,6 +18,7 @@ namespace View.Controllers
         public SessionController(IMemoryCache cache)
         {
             _cache = cache;
+
         }
         public void AddUserToSession(UserDto user)
         {

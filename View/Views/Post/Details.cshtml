@@ -1,0 +1,170 @@
+﻿@model Core.Classes.DTO.PostDto
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>PostDto</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.title)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.title)
+        </dd>
+        <li>
+
+                <br>
+            <img width="500" src="~/Images/@Model.mainImageUrl" onclick="showPopup('@Model.mainImageUrl', false)" />
+        </li>
+        <dt class = "col-sm-2">
+            upload datum:
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.postDate.Date.ToShortDateString()
+        </dd>
+        <dt class="col-sm-2">
+            Subimages:
+        </dt>
+        @if(Model.subImages != null)
+        {
+            <div class="image-gallery">
+            @foreach(var subimage in Model.subImages.OrderBy(s=>s.uploadDate).ToList())
+            {
+                    <img width="250" src="~/Images/@subimage.imageUrl" onclick="showPopup('@subimage.imageUrl', true)" />
+            }
+            </div>
+        }
+        <div id="imageModal" class="modal">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div class="popup">
+                <button class="bigbutton" id="left" onclick="changeImage(-1)">
+                    &#10094;
+                </button>
+                <img class="modal-content" id="fullImage">
+                <!-- Next button -->
+                <button class="bigbutton" id="right" onclick="changeImage(1)">&#10095;</button>
+            </div>
+        </div>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.postId  }) |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+<style>
+    .bigbutton {
+        font-size: 50px;
+        padding: 7px 18px;
+    }
+    .popup {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image-gallery {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .image-gallery img {
+        width: 250px; /* Set the width as needed */
+        height: auto;
+        margin: 10px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+        object-fit: cover;
+    }
+    .modal div {
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+    }
+
+    .modal-content {
+        margin: 6% auto;
+        display: block;
+        min-height: 70%;
+        max-height: 70%;
+        width: auto; /* Let the width adjust automatically */     
+        height: auto; /* Let the height adjust automatically */
+
+    }
+
+    .close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 30px;
+        cursor: pointer;
+        color: #fff;
+    }
+</style>
+<script>
+    var images = @Html.Raw(Json.Serialize(Model.subImages.Select(s=>s.imageUrl).ToList()));
+
+
+    var currentIndex = 0;
+
+    function showPopup(imageUrl, showSlidingButtons) {
+        var modal = document.getElementById("imageModal");
+        var fullImage = document.getElementById("fullImage");
+        fullImage.src = "/Images/" + imageUrl;
+        modal.style.display = "block";
+
+        slideButtonVisible(showSlidingButtons)
+
+        currentIndex = images.indexOf(imageUrl);
+    }
+    function changeImage(offset) {
+        // Calculate the new index
+        currentIndex += offset;
+        //console.log(JSON.parse('@Html.Raw(Model.subImages.Select(s=>s.imageUrl))');)
+        // Wrap around the gallery if you reach the end
+        if (currentIndex >= images.length) {
+            currentIndex = 0;
+        } else if (currentIndex < 0) {
+            currentIndex = images.length - 1;
+        }
+
+        // Get the new image URL and update the image source
+        var newImage = images[currentIndex];
+        var fullImage = document.getElementById("fullImage");
+        fullImage.src = "/Images/" + newImage;
+    }
+
+    function slideButtonVisible(visible) {
+        var left = document.getElementById("left");
+        var right = document.getElementById("right");
+        if (visible) {
+            left.style.display = "block";
+            right.style.display = "block";
+        }else{
+            left.style.display = "none";
+            right.style.display = "none";
+        }
+    }
+
+    // Function to close the popup
+    function closePopup() {
+        var modal = document.getElementById("imageModal");
+        modal.style.display = "none";
+    }
+</script>

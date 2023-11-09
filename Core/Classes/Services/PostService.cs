@@ -10,15 +10,28 @@ using System.Threading.Tasks;
 
 namespace Core.Classes.Services
 {
-    internal class PostService
+    public class PostService
     {
-        IPostRepository postRepository;
-        INoteRepository noteRepository;
+        IPostRepository PostRepository;
+        INoteRepository NoteRepository;
         ISubImageRepository SubImageRepository;
         ITagRepository TagRepository;
-        TagService TagService = new TagService();
-        NoteServices NoteServices = new NoteServices();
-        SubimageService SubimageService = new SubimageService();
+        TagService TagService;
+        NoteServices NoteServices;
+        SubimageService SubimageService;
+
+        public PostService(IPostRepository postRepository, INoteRepository noteRepository, ISubImageRepository subImageRepository, ITagRepository tagRepository)
+        {
+            this.PostRepository = postRepository;
+            this.NoteRepository = noteRepository;
+            this.SubImageRepository = subImageRepository;
+            this.TagRepository = tagRepository;
+
+            TagService = new TagService(TagRepository);
+            NoteServices = new NoteServices(NoteRepository);
+            SubimageService = new SubimageService(SubImageRepository);
+            
+        }
 
         public bool TryGetMainPagePosts(GetOverviewMantPostsDto paramaters, out OverviewManyPostsDto posts)
         {
@@ -26,8 +39,15 @@ namespace Core.Classes.Services
 
             try
             {
-                if (postRepository.TryGetOverviewPost(paramaters, out posts))
+                if (PostRepository.TryGetOverviewPost(paramaters, out posts))
                 {
+                    foreach (var post in posts.Posts)
+                    {
+                        if (TagRepository.TryGetTagsFromPost(post.postId,out List<Tag> tags))
+                        {
+                            post.Tags = tags;
+                        }
+                    }
                     return true;
                 }
                 return false;
@@ -43,9 +63,9 @@ namespace Core.Classes.Services
             post = null;
             try
             {
-                if (postRepository.TryGetDetailedPost(postId, out post))
+                if (PostRepository.TryGetDetailedPost(postId, out post))
                 {
-                    if (noteRepository.TryGetNotesFromPost(postId, out NotesDto notes))
+                    if (NoteRepository.TryGetNotesFromPost(postId, out NotesDto notes))
                         post.notes = notes.Notes;
                     if (SubImageRepository.TryGetSubimagesFromPost(postId, out SubimagesDto subimages))
                         post.subImages = subimages.images;
@@ -61,18 +81,18 @@ namespace Core.Classes.Services
                 return false;
             }
         }
-        public bool TryPostPostToDB(NewPostDto newPost)
+        public bool TryPostPostToDB(NewPostDto newPost, out int PostId)
         {
             try
             {
-                postRepository.TryAddNewPostToDB(newPost, out int PostId);
-                if(newPost.Tags != null)
-                {
-                    TagService.AddTagsToPost(PostId, newPost.Tags.Select(np => np.tagId).ToList());
-                }   
+                PostRepository.TryAddNewPostToDB(newPost, out PostId);
+ 
                 if(newPost.Notes != null)
                 {
-                    NoteServices.TryAddManyNotesNewPost(newPost.Notes, PostId);
+                    NewNoteDto newNoteDto = new NewNoteDto();
+                    newNoteDto.Text = newPost.Notes;
+                    newNoteDto.PostId = PostId;
+                    NoteServices.TryAddNewNote(newNoteDto);
                 }
                 if(newPost.SubImages != null)
                 {
@@ -82,21 +102,35 @@ namespace Core.Classes.Services
             }
             catch (Exception)
             {
+                PostId = -1;
                 return false;
             }
             
         }
+
         public bool TryDeletePost(int postId)
         {
-            if (postRepository.doesPostExist(postId))
+            if (PostRepository.doesPostExist(postId))
             {
                 //remove subimages belonging to post
 
                 //remove notes belonging to post
-                return postRepository.TryRemovePostToDB(postId);       
+                return PostRepository.TryRemovePostToDB(postId);       
             }
             return false;
-        }    
+        }  
+        public bool TryGetTagsFromPost(int postId, out List<Tag> tags)
+        {
+            try
+            {
+                return TagRepository.TryGetTagsFromPost(postId, out tags);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
         
     }
 }

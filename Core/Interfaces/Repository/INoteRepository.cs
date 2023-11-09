@@ -10,7 +10,7 @@ namespace Core.Interfaces.Repository
 {
     public interface INoteRepository
     {
-        public bool TryGetNotesFromPost(int PostId, out NotesDto notes);
+        public bool TryGetNotesFromPost(int PostId, out NotesDto? notes);
         public bool TryAddNewNote(int PostId, string NewNote);
         public bool TryRemoveNewNote(int NoteId);
         public bool TryUpdateNote(int NoteId, string NewText);

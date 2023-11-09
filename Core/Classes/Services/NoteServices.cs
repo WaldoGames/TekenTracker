@@ -11,6 +11,11 @@ namespace Core.Classes.Services
     internal class NoteServices
     {
         INoteRepository noteRepository;
+
+        public NoteServices(INoteRepository noteRepository)
+        {
+            this.noteRepository = noteRepository;
+        }
         public bool TryAddNewNote(NewNoteDto newNote)
         {
             return noteRepository.TryAddNewNote(newNote.PostId, newNote.Text);

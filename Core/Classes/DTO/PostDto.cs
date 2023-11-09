@@ -16,7 +16,7 @@ namespace Core.Classes.DTO
         public List<Note>? notes { get; set; }
         public List<SubImage>? subImages { get; set; }
 
-        public List<Tag>? Tags { get; set; }
+        public List<Tag>? Tags { get; set; } = new List<Tag>();
         public List<Tag>? RemovedTags { get; set; }
     }
 }
