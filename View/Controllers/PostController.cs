@@ -5,6 +5,7 @@ using Core.Classes.Services;
 using Core.Interfaces.Repository;
 using Dal.Classes;
 using Dal.Classes.RepositoryImplementations;
+using Humanizer;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,13 +20,13 @@ namespace View.Controllers
         PostService postService;
         TagService tagService;
         SessionController sessionController;
-        IWebHostEnvironment WebHost;
+        IWebHostEnvironment webHost;
         public PostController(IMemoryCache cache, IWebHostEnvironment webHost) : base(cache)
         {
             postService = new PostService(new PostRepository(),new NoteRepository(), new SubimageRepository(),new TagRepository());
             tagService = new TagService(new TagRepository());
             sessionController = new SessionController(cache);
-            WebHost = webHost;
+            this.webHost = webHost;
         }
 
 
@@ -95,13 +96,8 @@ namespace View.Controllers
                 dto.ImageUrl = UploadImage(newPost.image);
                 if(newPost.subimages != null)
                 {
-                    dto.SubImages = new List<NewSubimageDto>();
-                    foreach (IFormFile item in newPost.subimages)
-                    {
-                        NewSubimageDto subimage = new NewSubimageDto();
-                        subimage.imageUrl = UploadImage(item);
-                        dto.SubImages.Add(subimage);
-                    }
+
+                    dto.SubImages = UploadManyImages(newPost.subimages);
                 }
             }
             postService.TryPostPostToDB(dto, out int PostId);
@@ -142,12 +138,16 @@ namespace View.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditTagsFromPost(int id, TagEditViewModel tagEditViewModel)
+        public ActionResult EditTagsFromPost(int id, TagEditViewModel? tagEditViewModel)
         {
 
+            if(tagEditViewModel == null || tagEditViewModel.TagIds == null)
+            {
+                return RedirectToAction("EditTagsFromPost", "Post", new { id });
+            }
             tagService.UpdateTagsFromPost(id, tagEditViewModel.TagIds);
-
             return RedirectToAction("Index", "Post", new { });
+           
         }
         public ActionResult Edit(int id)
         {
@@ -189,7 +189,17 @@ namespace View.Controllers
                 return View();
             }
         }
-
+        private List<NewSubimageDto> UploadManyImages(List<IFormFile> images)
+        {
+            List<NewSubimageDto> newimages = new List<NewSubimageDto>();
+            foreach (IFormFile item in images)
+            {
+                NewSubimageDto subimage = new NewSubimageDto();
+                subimage.imageUrl = UploadImage(item);
+                newimages.Add(subimage);
+            }
+            return newimages;
+        }
         private string UploadImage(IFormFile image)
         {
             string fileName = null;
@@ -197,7 +207,7 @@ namespace View.Controllers
             if (image != null)
             {
 
-                string path = Path.Combine(WebHost.WebRootPath, "Images");
+                string path = Path.Combine(webHost.WebRootPath, "Images");
                 string Filename = Guid.NewGuid() + image.FileName;
                 string FilePath = Path.Combine(path, Filename);
                 fileName = Filename;

@@ -58,6 +58,7 @@ namespace Core.Classes.Services
                 return false;
             }         
         }
+
         public bool TryGetDetailedPost(int postId, out Post post)
         {
             post = null;

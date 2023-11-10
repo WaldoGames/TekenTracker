@@ -47,6 +47,11 @@ namespace Core.Classes.Services
         {
             return TagRepository.TryGetAllTags(out tags);
         }
+
+       /* public bool TryGetAllTagsPreviouslyUsedByUser()
+        {
+       *
+        }*/
         public void CreateNewTag(string TagName, int TagType)
         {
 
