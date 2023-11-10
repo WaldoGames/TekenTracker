@@ -54,9 +54,9 @@ namespace View.Controllers
 
             mainPageViewModel.posts = posts.Posts;
             List<Tag> c = new List<Tag>();
-            if (tagService.TryGetAllTags(out List<Tag> tags)){
+            if (tagService.TryGetSearchTagsFromUser(user.userId,out List<Tag> tags)){
 
-                c = posts.Posts.SelectMany(p => p.Tags).Distinct(new TagComparer()).OrderBy(t=>t.name).ToList();
+                c = tags;
             }
             ViewBag.Tags = c.Where(t=>t.type == Core.Classes.Enums.TagTypes.Search).ToList();
 

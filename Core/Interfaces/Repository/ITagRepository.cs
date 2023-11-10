@@ -15,6 +15,8 @@ namespace Core.Interfaces.Repository
         public bool TryRemoveStringFromDB(int tagId);
         public bool TryGetTags(GetTagsDto getTagsDto, out List<Tag> tags);
         public bool TryGetTagsFromPost(int postId, out List<Tag> tags);
+
+        public bool TryGetTagsUsedByUser(int userId, out List<Tag> tags);
         public bool DoesPostHaveTag(int postId, int tagId);
 
         public bool TryAddTagToPost(int postId, int tagId);

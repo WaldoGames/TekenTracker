@@ -29,18 +29,28 @@ namespace Core.Classes.Services
             }
              
         }
-        public void AddTagsToPost(int PostId, List<int> tagIds)
+        public bool TryGetSearchTagsFromUser(int userId, out List<Tag>? tags)
+        {
+            if (TagRepository.TryGetTagsUsedByUser(userId, out List<Tag> UsedTags))
+            {
+                tags = UsedTags.Where(t => t.type == Enums.TagTypes.Search).OrderBy(t=>t.name).ToList();
+                return true;
+            }
+            tags = null;
+            return false;
+        }
+        public void AddTagsToPost(int postId, List<int> tagIds)
         {
             foreach (int tag in tagIds)
             {
-                TagRepository.TryAddTagToPost(PostId, tag);     
+                TagRepository.TryAddTagToPost(postId, tag);     
             }
         }
-        public void RemoveTagsFromPost(int PostId, List<int> tagIds)
+        public void RemoveTagsFromPost(int postId, List<int> tagIds)
         {
             foreach (int tag in tagIds)
             {
-                TagRepository.TryRemoveTagFromPost(PostId, tag);
+                TagRepository.TryRemoveTagFromPost(postId, tag);
             }
         }
         public bool TryGetAllTags(out List<Tag>? tags)//turn in
@@ -48,11 +58,7 @@ namespace Core.Classes.Services
             return TagRepository.TryGetAllTags(out tags);
         }
 
-       /* public bool TryGetAllTagsPreviouslyUsedByUser()
-        {
-       *
-        }*/
-        public void CreateNewTag(string TagName, int TagType)
+        public void CreateNewTag(string tagName, int tagType)
         {
 
         }

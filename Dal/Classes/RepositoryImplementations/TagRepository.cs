@@ -149,6 +149,43 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
+        public bool TryGetTagsUsedByUser(int userId, out List<Tag> tags)
+        {
+            tags = new List<Tag>();
+
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+
+                    cmd.CommandText = "SELECT DISTINCT tag.tag_id as tagId, tag.title as title, tag.type as type FROM ((posts INNER JOIN posttag ON posttag.post_id = posts.post_id) INNER JOIN tag ON posttag.tag_id = tag.tag_id) WHERE posts.user_id = @userid";
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    cmd.CommandType = CommandType.Text;
+
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        var tag = new Tag();
+                        tag.name = Convert.ToString(rdr["title"]);
+                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        int tmp = Convert.ToInt32(rdr["type"]);
+                        tag.type = (TagTypes)tmp;
+                        tags.Add(tag);
+                    }
+
+                    con.Close();
+                    return true;
+                }
+            }
+            catch (Exception)
+            {
+                //return false;
+                throw;
+            }
+        }
+
         public bool TryRemoveStringFromDB(int tagId)
         {
             throw new NotImplementedException();
