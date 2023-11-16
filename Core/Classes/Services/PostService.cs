@@ -128,7 +128,6 @@ namespace Core.Classes.Services
             }
             catch (Exception)
             {
-
                 throw;
             }
         }

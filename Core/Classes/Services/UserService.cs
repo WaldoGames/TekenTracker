@@ -22,15 +22,8 @@ namespace Core.Classes.Services
         {
             return repository.IsTokenValid(user.userName, user.Token);
         }
-        public bool tmpCheckPasswords(string password)
-        {
-            Encryption encryption = new Encryption();
-
-            return encryption.CompareEncryptedString(password, encryption.EncryptNewString(password));
-        }
         public bool TryLogin(string username, string password, out UserDto userDto)
         {
-            bool tmp = tmpCheckPasswords(password);
 
             Encryption encryption = new Encryption();
             userDto= new UserDto();
@@ -69,7 +62,12 @@ namespace Core.Classes.Services
         {
             UserCreationEnum userCreationEnum = new UserCreationEnum();
 
-            if (repository.DoesUserExistInDB(newUser.userName, out bool doesUserExist))
+            if(string.IsNullOrEmpty(newUser.email) || string.IsNullOrEmpty(newUser.password) || string.IsNullOrEmpty(newUser.userName))
+            {
+                userCreationEnum = UserCreationEnum.failed;
+            }
+
+            else if (repository.DoesUserExistInDB(newUser.userName, out bool doesUserExist))
             {
                 
                 if (doesUserExist)

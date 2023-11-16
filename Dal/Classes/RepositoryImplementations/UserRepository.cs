@@ -160,6 +160,7 @@ namespace Dal.Classes.RepositoryImplementations
 
                         TokenGenerator tokenGenerator = new TokenGenerator();
                         user.Token = tokenGenerator.GenerateToken();
+                        user.TokenValidUntil = DateTime.Now.AddHours(1);
                     }
                     con.Close();
                 }
