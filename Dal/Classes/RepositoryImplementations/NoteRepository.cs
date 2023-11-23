@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
 using MySql.Data.MySqlClient;
@@ -15,12 +16,12 @@ namespace Dal.Classes.RepositoryImplementations
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
-        public bool DoesNoteExist(int NoteId)
+        public Result<bool> DoesNoteExist(int NoteId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryAddNewNote(int PostId, string NewNote)
+        public SimpleResult AddNewNote(int PostId, string NewNote)
         {
             try
             {
@@ -34,65 +35,65 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
                     MySqlDataReader rdr = cmd.ExecuteReader();               
                     con.Close();
-                    return true;
+                    return new SimpleResult();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new SimpleResult { ErrorMessage = e.Message };
                 throw;
             }
         }
 
-        public bool TryGetNotesFromPost(int PostId, out NotesDto? notes)
+        public Result<NotesDto> GetNotesFromPost(int PostId)
         {
-            notes = null;
+            NotesDto notes = new NotesDto();
+            notes.Notes = new List<Note>();
             using (MySqlConnection con = new MySqlConnection(CS))
             {
                 try
                 {
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM note WHERE post_id = @id", con);
+                    cmd.Parameters.AddWithValue("@id", PostId);
+                    cmd.CommandType = CommandType.Text;
+                    con.Open();
+
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        if (notes == null)
+                        {
+                            notes = new NotesDto();
+                            notes.Notes = new List<Note>();
+                        }
 
 
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM note WHERE post_id = @id", con);
-                cmd.Parameters.AddWithValue("@id", PostId);
-                cmd.CommandType = CommandType.Text;
-                con.Open();
+                        Note note = new Note();
+                        note.text = Convert.ToString(rdr["text"]);
+                        note.uploadDate = Convert.ToDateTime(rdr["upload_date"]);
+                        note.noteId = Convert.ToInt32(rdr["note_id"]);
+                        notes.Notes.Add(note);
 
-                MySqlDataReader rdr = cmd.ExecuteReader();
-                while (rdr.Read())
-                {
-                    if (notes == null) {
-                        notes = new NotesDto();
-                        notes.Notes = new List<Note>();
                     }
 
-                    
-                    Note note = new Note();
-                    note.text = Convert.ToString(rdr["text"]);
-                    note.uploadDate = Convert.ToDateTime(rdr["upload_date"]);
-                    note.noteId = Convert.ToInt32(rdr["note_id"]);
-                    notes.Notes.Add(note);
-                    
+                    con.Close();
+                    return new Result<NotesDto> { Data = notes };
                 }
-               
-                con.Close();
-                return true;
-                }
-                catch (Exception)
+                catch (Exception e)
                 {
                     con.Close();
-                    return false;
+                    return new Result<NotesDto> { ErrorMessage = "NoteRepository->GetNotesFromPost: " + e.Message };
                 }
             }
-            
+            return new Result<NotesDto> { ErrorMessage = "NoteRepository->GetNotesFromPost: unkown error" };
         }
 
-        public bool TryRemoveNewNote(int NoteId)
+        public SimpleResult RemoveNewNote(int NoteId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryUpdateNote(int NoteId, string NewText)
+        public SimpleResult UpdateNote(int NoteId, string NewText)
         {
             throw new NotImplementedException();
         }

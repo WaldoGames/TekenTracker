@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Enums;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
@@ -17,37 +18,44 @@ namespace Dal.Classes.RepositoryImplementations
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
-        public bool DoesPostHaveTag(int postId, int tagId)
+        public Result<bool> DoesPostHaveTag(int postId, int tagId)
         {
-
-            bool returnVal = false;
-
-            using (MySqlConnection con = new MySqlConnection(CS))
+            try
             {
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM posttag WHERE(post_id = @postid && tag_id = @tagId)", con);
-                cmd.Parameters.AddWithValue("@postid", postId);
-                cmd.Parameters.AddWithValue("@tagId", tagId);
-                cmd.CommandType = CommandType.Text;
-                con.Open();
 
-                MySqlDataReader rdr = cmd.ExecuteReader();
+                bool returnVal = false;
 
-                while (rdr.Read())
+                using (MySqlConnection con = new MySqlConnection(CS))
                 {
-                    returnVal = true;
-                }
-                con.Close();
-                return returnVal;
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM posttag WHERE(post_id = @postid && tag_id = @tagId)", con);
+                    cmd.Parameters.AddWithValue("@postid", postId);
+                    cmd.Parameters.AddWithValue("@tagId", tagId);
+                    cmd.CommandType = CommandType.Text;
+                    con.Open();
 
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        returnVal = true;
+                    }
+                    con.Close();
+                    return new Result<bool> { Data = returnVal };
+
+                }
+            }
+            catch (Exception e)
+            {
+                return new Result<bool> { ErrorMessage = "TagRepository->DoesPostHaveTag:" + e.Message };
             }
         }
 
-        public bool TryAddNewTagToDB(string tagName)
+        public SimpleResult AddNewTagToDB(string tagName)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryAddTagToPost(int postId, int tagId)
+        public SimpleResult AddTagToPost(int postId, int tagId)
         {
             try
             {
@@ -63,22 +71,22 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
 
                     con.Close();
-                    return true;
+                    return new SimpleResult();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new SimpleResult { ErrorMessage = "TagRepository->AddTagToPost: "+ e.Message };
                 throw;
             }
         }
 
-        public bool TryGetAllTags(out List<Tag>? tags)
+        public Result<List<Tag>> GetAllTags()
         {
-            tags = null;
+
             try
             {
-                tags = new List<Tag>();
+                List<Tag> tags = new List<Tag>();
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM tag", con);
@@ -97,24 +105,24 @@ namespace Dal.Classes.RepositoryImplementations
                     }
                     con.Close();
                 }
-                return true;
+                return new Result<List<Tag>> { Data = tags };
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new Result<List<Tag>> { ErrorMessage = "TagRepository->GetAllTags: " + e.Message };
                 throw;
             }
 
         }
 
-        public bool TryGetTags(GetTagsDto getTagsDto, out List<Tag> tags)
+        public Result<List<Tag>> GetTags(GetTagsDto getTagsDto)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryGetTagsFromPost(int postId, out List<Tag> tags)
+        public Result<List<Tag>> GetTagsFromPost(int postId)
         {
-            tags = new List<Tag>();
+            List<Tag>  tags = new List<Tag>();
 
             try
             {
@@ -139,19 +147,18 @@ namespace Dal.Classes.RepositoryImplementations
                     }
 
                     con.Close();
-                    return true;
+                    return new Result<List<Tag>> { Data = tags };
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //return false;
-                throw;
+                return new Result<List<Tag>> { ErrorMessage = "TagRepository->GetTagsFromPost: " + e.Message };
             }
         }
 
-        public bool TryGetTagsUsedByUser(int userId, out List<Tag> tags)
+        public Result<List<Tag>> GetTagsUsedByUser(int userId)
         {
-            tags = new List<Tag>();
+            List<Tag>  tags = new List<Tag>();
 
             try
             {
@@ -176,22 +183,21 @@ namespace Dal.Classes.RepositoryImplementations
                     }
 
                     con.Close();
-                    return true;
+                    return new Result<List<Tag>> { Data = tags };
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //return false;
-                throw;
+                return new Result<List<Tag>> { ErrorMessage = "TagRepository->TryGetTagsUsedByUser: " + e.Message };
             }
         }
 
-        public bool TryRemoveStringFromDB(int tagId)
+        public SimpleResult RemoveStringFromDB(int tagId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryRemoveTagFromPost(int postId, int tagId)
+        public SimpleResult RemoveTagFromPost(int postId, int tagId)
         {
             try
             {
@@ -207,13 +213,12 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
 
                     con.Close();
-                    return true;
+                    return new SimpleResult();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
-                throw;
+                return new Result<List<Tag>> { ErrorMessage = "TagRepository->TryRemoveTagFromPost: " + e.Message };
             }
         }
     }

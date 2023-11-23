@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
 using MySql.Data.MySqlClient;
@@ -16,12 +17,12 @@ namespace Dal.Classes.RepositoryImplementations
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
-        public bool DoesSubimageExist(int SubimageId)
+        public Result<bool> DoesSubimageExist(int SubimageId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryAddNewSubimage(int PostId, string NewUrl)
+        public SimpleResult AddNewSubimage(int PostId, string NewUrl)
         {
 
             try
@@ -36,20 +37,20 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     con.Close();
-                    return true;
+                    return new SimpleResult();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new SimpleResult { ErrorMessage = "SubimageRepository->AddNewSubimage: "+ e.Message };
                 throw;
             }
             
         }
 
-        public bool TryGetSubimagesFromPost(int PostId, out SubimagesDto subimages)
+        public Result<SubimagesDto> GetSubimagesFromPost(int PostId)
         {
-            subimages = new SubimagesDto();
+            SubimagesDto subimages = new SubimagesDto();
             subimages.images = new List<SubImage>();
             
             using (MySqlConnection con = new MySqlConnection(CS))
@@ -83,23 +84,23 @@ namespace Dal.Classes.RepositoryImplementations
                 }
 
                 con.Close();
-                    return true ;
+                    return new Result<SubimagesDto> { Data = subimages } ;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     con.Close();
-                    return false;
+                    return new Result<SubimagesDto> { ErrorMessage = "SubimageRepositry->TryGetSubimagesFromPost: "+ e.Message }; ;
                 }
             }
             
         }
 
-        public bool TryRemoveNewSubimage(int SubimageId)
+        public SimpleResult RemoveNewSubimage(int SubimageId)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryUpdateSubimage(int PostId, string UpdatesUrl)
+        public SimpleResult UpdateSubimage(int PostId, string UpdatesUrl)
         {
             throw new NotImplementedException();
         }

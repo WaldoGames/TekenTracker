@@ -16,21 +16,21 @@ namespace Core.Classes.Services
         {
             SubimageRepository = subImageRepository;
         }
-        public bool TryAddNewSubimage(NewSubimageDto subimageDto)
+        public SimpleResult AddNewSubimage(NewSubimageDto subimageDto)
         {
-            return SubimageRepository.TryAddNewSubimage(subimageDto.postId, subimageDto.imageUrl);
+            return SubimageRepository.AddNewSubimage(subimageDto.postId, subimageDto.imageUrl);
         }
-        public bool TryAddManySubimagesNewPost(List<NewSubimageDto> newSubimages, int postId)
+        public SimpleResult AddManySubimagesNewPost(List<NewSubimageDto> newSubimages, int postId)
         {
             foreach (NewSubimageDto newSubimage in newSubimages)
             {
                 newSubimage.postId = postId;
-                if (!TryAddNewSubimage(newSubimage))
+                if (AddNewSubimage(newSubimage).IsFailed)
                 {
-                    return false;
+                    return new SimpleResult { ErrorMessage = "SubimageServices->TryAddManySubimagesNewPost: Error passed from AddNewSubimage" };
                 }
             }
-            return true;
+            return new SimpleResult { };
         }
     }
 }

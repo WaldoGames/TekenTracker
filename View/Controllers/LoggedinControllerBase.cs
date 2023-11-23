@@ -3,6 +3,7 @@ using Core.Classes.Services;
 using Dal.Classes.RepositoryImplementations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using MySqlX.XDevAPI.Common;
 
 namespace View.Controllers
 {
@@ -19,7 +20,7 @@ namespace View.Controllers
         {
             LoginView = RedirectToAction("Index", "User", new { area = "" });
 
-            if (BaseSessionController.GetUserFromSession(out UserDto dto) && BaseUserService.ChecKLoginStatus(dto))
+            if (BaseSessionController.GetUserFromSession(out UserDto dto) && BaseUserService.ChecKLoginStatus(dto).Data)
             {
                 return true;
             }

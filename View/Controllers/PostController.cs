@@ -10,6 +10,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using NuGet.Protocol;
 using View.Models;
 
 namespace View.Controllers
@@ -50,15 +51,22 @@ namespace View.Controllers
             getOverviewMantPostsDto.Tags = mainPageViewModel.usedTags;
             getOverviewMantPostsDto.userId = user.userId;
 
-            postService.TryGetMainPagePosts(getOverviewMantPostsDto, out OverviewManyPostsDto posts);
+            Result <OverviewManyPostsDto> posts = postService.GetMainPagePosts(getOverviewMantPostsDto);
 
-            mainPageViewModel.posts = posts.Posts;
-            List<Tag> c = new List<Tag>();
-            if (tagService.TryGetSearchTagsFromUser(user.userId,out List<Tag> tags)){
-
-                c = tags;
+            if (posts.IsFailed)
+            {
+                return View("error");
             }
-            ViewBag.Tags = c.Where(t=>t.type == Core.Classes.Enums.TagTypes.Search).ToList();
+
+            mainPageViewModel.posts = posts.Data.Posts;
+            Result<List<Tag>> c = tagService.GetSearchTagsFromUser(user.userId);
+
+            if (c.IsFailed)
+            {
+                return View("error");
+            }
+
+            ViewBag.Tags = c.Data.Where(t=>t.type == Core.Classes.Enums.TagTypes.Search).ToList();
 
             return View(mainPageViewModel);
         }
@@ -67,14 +75,14 @@ namespace View.Controllers
         // GET: PostController/Details/5
         public ActionResult Details(int id)
         {
-            if(postService.TryGetDetailedPost(id, out Post post))
+            Result<Post> post = postService.GetDetailedPost(id);
+
+            if (post.IsFailed)
             {
-                return View(post.GetPost());
+                return View("error");  
             }
 
-
-
-            return View("error");
+            return View(post.Data.GetPost());
         }
         
         // GET: PostController/Create
@@ -100,9 +108,13 @@ namespace View.Controllers
                     dto.SubImages = UploadManyImages(newPost.subimages);
                 }
             }
-            postService.TryPostPostToDB(dto, out int PostId);
+            Result<int> result = postService.PostPostToDB(dto);
+            if (result.IsFailed)
+            {
+                return View("error");
+            }
 
-            return RedirectToAction("EditTagsFromPost", "Post", new { id = PostId });//return tagedit window(make sure id is in link)
+            return RedirectToAction("EditTagsFromPost", "Post", new { id = result.Data });//return tagedit window(make sure id is in link)
         }
 
         // POST: PostController/Create
@@ -113,25 +125,25 @@ namespace View.Controllers
             TagEditViewModel tm = new TagEditViewModel();
             tm.PostId = id;
             //get all tags to 
-            if (tagService.TryGetAllTags(out List<Tag> Alltags))
-            {
 
-                ViewBag.Tags = Alltags.Where(e=>e.type == Core.Classes.Enums.TagTypes.Search).ToList();
-                ViewBag.ImprovementTags = Alltags.Where(e => e.type == Core.Classes.Enums.TagTypes.Improvement).ToList();
-            }
-            else
+            Result<List<Tag>> Alltags = tagService.GetAllTags();
+            if (Alltags.IsFailed)
             {
                 return View("error");
             }
 
-            if (postService.TryGetTagsFromPost(id, out List<Tag> tags))
-            {
-                tm.Tags = tags;
-            }
-            else
+            ViewBag.Tags = Alltags.Data.Where(e=>e.type == Core.Classes.Enums.TagTypes.Search).ToList();
+            ViewBag.ImprovementTags = Alltags.Data.Where(e => e.type == Core.Classes.Enums.TagTypes.Improvement).ToList();
+ 
+            Result<List<Tag>> tags = postService.GetTagsFromPost(id);
+
+            if (tags.IsFailed)
             {
                 return View("error");
             }
+
+            tm.Tags = tags.Data;
+
             tm.TagIds = tm.Tags.Select(t => t.tagId).ToList();
 
             return View(tm);

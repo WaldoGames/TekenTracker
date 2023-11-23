@@ -1,4 +1,6 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
+using Core.Classes.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,10 +12,10 @@ namespace Core.Interfaces.Repository
 {
     public interface INoteRepository
     {
-        public bool TryGetNotesFromPost(int PostId, out NotesDto? notes);
-        public bool TryAddNewNote(int PostId, string NewNote);
-        public bool TryRemoveNewNote(int NoteId);
-        public bool TryUpdateNote(int NoteId, string NewText);
-        public bool DoesNoteExist(int NoteId);
+        public Result<NotesDto> GetNotesFromPost(int PostId);
+        public SimpleResult AddNewNote(int PostId, string NewNote);
+        public SimpleResult RemoveNewNote(int NoteId);
+        public SimpleResult UpdateNote(int NoteId, string NewText);
+        public Result<bool> DoesNoteExist(int NoteId);
     }
 }

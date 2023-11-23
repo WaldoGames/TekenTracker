@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,15 @@ namespace Core.Interfaces.Repository
 {   
     public interface IUserRepository
     {
-        public bool tryAddUserToDB(NewUserDto newUser);
-        public bool tryRemoveUserFromDB(int UserId);
+        public SimpleResult AddUserToDB(NewUserDto newUser);
+        public SimpleResult RemoveUserFromDB(int UserId);
       //public bool tryGetAccountToken(int UserId, out CheckAccountTokenDTO AccountToken);
-        public bool tryAddNewAccountTokenToDB(int UserId, out CheckAccountTokenDTO AccountToken);
+        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int UserId);
 
-        public bool DoesUserExistInDB(string UserName, out bool DoesUserExist);
-        public bool TryGetUser(string Username, out User? user);
+        public Result<bool> DoesUserExistInDB(string UserName);
+        public Result<User> GetUser(string Username);
 
-        public bool IsTokenValid(string Username, string Token);
+        public Result<bool> IsTokenValid(string Username, string Token);
 
     }
 }   

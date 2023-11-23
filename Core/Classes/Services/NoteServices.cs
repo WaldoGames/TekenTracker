@@ -16,21 +16,21 @@ namespace Core.Classes.Services
         {
             this.noteRepository = noteRepository;
         }
-        public bool TryAddNewNote(NewNoteDto newNote)
+        public SimpleResult AddNewNote(NewNoteDto newNote)
         {
-            return noteRepository.TryAddNewNote(newNote.PostId, newNote.Text);
+            return noteRepository.AddNewNote(newNote.PostId, newNote.Text);
         }
-        public bool TryAddManyNotesNewPost(List<NewNoteDto> newNotes, int postId)
+        public SimpleResult AddManyNotesNewPost(List<NewNoteDto> newNotes, int postId)
         {
             foreach (NewNoteDto newNote in newNotes)
             {
                 newNote.PostId = postId;
-                if (!TryAddNewNote(newNote))
+                if (AddNewNote(newNote).IsFailed)
                 {
-                    return false;
+                    return new SimpleResult { ErrorMessage = "NoteServices->AddManyNotesNewPost: Error passed from AddNewNote" };
                 }
             }
-            return true;
+            return new SimpleResult { };
         }
     }
 }

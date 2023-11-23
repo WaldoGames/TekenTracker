@@ -12,12 +12,14 @@ using System.Threading.Tasks;
 
 namespace Dal.Classes.RepositoryImplementations
 {
+
+
     public class UserRepository : IUserRepository
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
-        public bool DoesUserExistInDB(string UserName, out bool DoesUserExist)
+        public Result<bool> DoesUserExistInDB(string UserName)
         {
-            DoesUserExist = false;
+            bool DoesUserExist = false;
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
@@ -35,54 +37,60 @@ namespace Dal.Classes.RepositoryImplementations
                     con.Close();
 
                 }
-                return true;
+                return new Result<bool> { Data = DoesUserExist };
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
-                throw;
+                return new Result<bool> { ErrorMessage = "UserRepository->DoesUserExistInDB: " + e.Message };
             }
         }
 
-        public bool IsTokenValid(string Username, string Token)
+        public Result<bool> IsTokenValid(string Username, string Token)
         {
-            TryGetUser(Username, out User? user);
-
-            if (user != null)
+            try
             {
-                using (MySqlConnection con = new MySqlConnection(CS))
+            Result<User> user = GetUser(Username);
+
+                if (user.Data != null && user.IsFailed == false)
                 {
-                    MySqlCommand cmd = new MySqlCommand("SELECT remember_token,valid_until FROM users WHERE user_id = @UserId LIMIT 1", con);
-                    cmd.Parameters.AddWithValue("@UserId", user.userId);
-                    cmd.CommandType = CommandType.Text;
-                    con.Open();
-
-                    MySqlDataReader rdr = cmd.ExecuteReader();
-                    while (rdr.Read())
+                    using (MySqlConnection con = new MySqlConnection(CS))
                     {
+                        MySqlCommand cmd = new MySqlCommand("SELECT remember_token,valid_until FROM users WHERE user_id = @UserId LIMIT 1", con);
+                        cmd.Parameters.AddWithValue("@UserId", user.Data.userId);
+                        cmd.CommandType = CommandType.Text;
+                        con.Open();
 
-                        string DBtoken = Convert.ToString(rdr["remember_token"]);
-                        DateTime dateTime = Convert.ToDateTime(rdr["valid_until"]);
-                        con.Close();
-                        if (Token != DBtoken || DateTime.Now > dateTime)
+                        MySqlDataReader rdr = cmd.ExecuteReader();
+                        while (rdr.Read())
                         {
-                            return false;
+
+                            string DBtoken = Convert.ToString(rdr["remember_token"]);
+                            DateTime dateTime = Convert.ToDateTime(rdr["valid_until"]);
+                            con.Close();
+                            if (Token != DBtoken || DateTime.Now > dateTime)
+                            {
+                                return new Result<bool> { Data = false };
+                            }
+
+
+                            return new Result<bool> { Data = true };
                         }
+                        con.Close();
 
-
-                        return true;
                     }
-                    con.Close();
-
-                }
                
+                }
             }
-            return false;
+            catch (Exception e)
+            {
+                return new Result<bool> { ErrorMessage = "UserRepository->IsTokenValid: " + e.Message };
+            }
+            return new Result<bool> { ErrorMessage = "UserRepository->IsTokenValid: " + "unknown error(likly the user could not be found)" };
         }
 
-        public bool tryAddNewAccountTokenToDB(int UserId, out CheckAccountTokenDTO AccountToken)
+        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int UserId)
         {
-            AccountToken = new CheckAccountTokenDTO();
+            CheckAccountTokenDTO AccountToken = new CheckAccountTokenDTO();
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
@@ -100,17 +108,16 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
 
                     con.Close();
-                    return true;
+                    return new Result<CheckAccountTokenDTO> { Data = AccountToken };
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
-                throw;
+                return new Result<CheckAccountTokenDTO> { ErrorMessage = "UserRepository->AddNewAccountTokenToDB: "+ e.Message };
             }
         }
 
-        public bool tryAddUserToDB(NewUserDto newUser)
+        public SimpleResult AddUserToDB(NewUserDto newUser)
         {
             Encryption encryption = new Encryption();
             try
@@ -127,23 +134,24 @@ namespace Dal.Classes.RepositoryImplementations
                     cmd.CommandType = CommandType.Text;
 
                     con.Close();
-                    return true;
+                    return new SimpleResult();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //return false;
+                return new SimpleResult { ErrorMessage = "UserRepository->AddUserToDB: " + e.Message };
                 throw;
             }
         }
 
-        public bool TryGetUser(string Username, out User? user)
+        public Result<User> GetUser(string Username)
         {
-            user = null;
             try
             {
+                User user = new User();
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
+                   
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM users WHERE username = @username LIMIT 1", con);
                     cmd.Parameters.AddWithValue("@username", Username);
                     cmd.CommandType = CommandType.Text;
@@ -152,7 +160,7 @@ namespace Dal.Classes.RepositoryImplementations
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        user = new User();
+
                         user.userId = Convert.ToInt32(rdr["user_id"]);
                         user.userName = Convert.ToString(rdr["username"]);
                         user.password = Convert.ToString(rdr["password"]);
@@ -164,17 +172,16 @@ namespace Dal.Classes.RepositoryImplementations
                     }
                     con.Close();
                 }
-                return true;
+                return new Result<User> { Data = user };
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new Result<User> { ErrorMessage = "UserRepository->GetUser: " + e.Message };
                 throw;
             }
 
         }
-
-        public bool tryRemoveUserFromDB(int UserId)
+        public SimpleResult RemoveUserFromDB(int UserId)
         {
             throw new NotImplementedException();
         }

@@ -17,45 +17,72 @@ namespace Core.Classes.Services
             TagRepository = tagRepository;
         }
 
-        public void UpdateTagsFromPost(int PostId, List<int> tagIds)
+        public SimpleResult UpdateTagsFromPost(int PostId, List<int> tagIds)
         {
-            if (TagRepository.TryGetTagsFromPost(PostId, out List<Tag> currentTags))
-            {
-                List<Tag> ToRemove = currentTags.Where(e => !tagIds.Contains(e.tagId)).ToList();
-                List<int> ToAdd = tagIds.Where(e => !currentTags.Select(e=>e.tagId).Contains(e)).ToList();
+            Result<List<Tag>> currentPostTags = TagRepository.GetTagsFromPost(PostId);
 
-                RemoveTagsFromPost(PostId,ToRemove.Select(e => e.tagId).ToList());
-                AddTagsToPost(PostId, ToAdd);
-            }
-             
-        }
-        public bool TryGetSearchTagsFromUser(int userId, out List<Tag>? tags)
-        {
-            if (TagRepository.TryGetTagsUsedByUser(userId, out List<Tag> UsedTags))
+            if (currentPostTags.IsFailed)
             {
-                tags = UsedTags.Where(t => t.type == Enums.TagTypes.Search).OrderBy(t=>t.name).ToList();
-                return true;
+                return new SimpleResult { ErrorMessage = "TagService->UpdateTagsFromPost: Passed from TagRepository->GetTagsFromPost" };
             }
-            tags = null;
-            return false;
+            if (currentPostTags.Data == null)
+            {
+                currentPostTags.Data = new List<Tag>();
+            }
+            List<Tag> ToRemove = currentPostTags.Data.Where(e => !tagIds.Contains(e.tagId)).ToList();
+            List<int> ToAdd = tagIds.Where(e => !currentPostTags.Data.Select(e => e.tagId).Contains(e)).ToList();
+
+            RemoveTagsFromPost(PostId, ToRemove.Select(e => e.tagId).ToList());
+            AddTagsToPost(PostId, ToAdd);
+
+            return new SimpleResult();
+
         }
-        public void AddTagsToPost(int postId, List<int> tagIds)
+        public Result<List<Tag>> GetSearchTagsFromUser(int userId)
+        {
+            Result<List<Tag>> tags = TagRepository.GetTagsUsedByUser(userId);
+
+            if (tags.IsFailed)
+            {
+                return new Result<List<Tag>> { ErrorMessage = "TagService->TrySearchTagsFromUser: error passed from TagRepository->GetTagsUsedByUser" };
+            }
+            if(tags.Data == null)
+            {
+                tags.Data = new List<Tag>();
+            }
+            tags.Data = tags.Data.Where(t => t.type == Enums.TagTypes.Search).OrderBy(t => t.name).ToList();
+            return new Result<List<Tag>> { Data = tags.Data };
+
+        }
+        public SimpleResult AddTagsToPost(int postId, List<int> tagIds)
         {
             foreach (int tag in tagIds)
             {
-                TagRepository.TryAddTagToPost(postId, tag);     
+                SimpleResult tmp = TagRepository.AddTagToPost(postId, tag);
+
+                if (tmp.IsFailed)
+                {
+                    return new SimpleResult { ErrorMessage = "TagService->AddTagsToPost error passed from TagRepository->AddTagToPost" };
+                }
             }
+            return new SimpleResult();
         }
-        public void RemoveTagsFromPost(int postId, List<int> tagIds)
+        public SimpleResult RemoveTagsFromPost(int postId, List<int> tagIds)
         {
             foreach (int tag in tagIds)
             {
-                TagRepository.TryRemoveTagFromPost(postId, tag);
+                SimpleResult tmp = TagRepository.RemoveTagFromPost(postId, tag);
+
+                if (tmp.IsFailed)
+                {
+                    return new SimpleResult { ErrorMessage = "TagService->RemoveTagsFromPost error passed from TagRepository->RemoveTagFromPost" };
+                }
             }
+            return new SimpleResult();
         }
-        public bool TryGetAllTags(out List<Tag>? tags)//turn in
+        public Result<List<Tag>> GetAllTags()//turn in
         {
-            return TagRepository.TryGetAllTags(out tags);
+            return TagRepository.GetAllTags();
         }
 
         public void CreateNewTag(string tagName, int tagType)

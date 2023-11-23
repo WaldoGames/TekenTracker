@@ -16,35 +16,33 @@ namespace TekenTracker.UnitTests.FakeDB
 
         DataContainer container = new DataContainer();
 
-        public bool DoesUserExistInDB(string UserName, out bool DoesUserExist)
+        public Result<bool> DoesUserExistInDB(string UserName)
         {
             if (container.users.Select(u => u.userName).Contains(UserName))
             {
-                DoesUserExist = true;
+                return new Result<bool> { Data = true };
             }
             else
             {
-                DoesUserExist = false;
+                return new Result<bool> { Data = false };
             }
-
-            return true;
         }
 
-        public bool IsTokenValid(string Username, string Token)
+        public Result<bool> IsTokenValid(string Username, string Token)
         {
             User user = container.users.Where(u => u.userName == Username).First();
 
             if (user.Token == Token && user.TokenValidUntil > DateTime.Now)
             {
-                return true;    
+                return new Result<bool> { Data = true };
             }
-            return false;
+            return new Result<bool> { Data = false };
         }
 
-        public bool tryAddNewAccountTokenToDB(int UserId, out CheckAccountTokenDTO AccountToken)
+        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int UserId)
         {
 
-                AccountToken = new CheckAccountTokenDTO();
+                CheckAccountTokenDTO AccountToken = new CheckAccountTokenDTO();
 
                 AccountToken.Token = ("token-"+UserId);
                 AccountToken.ValidUntil = DateTime.Now.AddSeconds(60);
@@ -52,7 +50,7 @@ namespace TekenTracker.UnitTests.FakeDB
                 User user = container.users.Where(u => u.userId==UserId).First();
                 user.Token = AccountToken.Token;
                 user.TokenValidUntil = AccountToken.ValidUntil;
-                return true;
+            return new Result<CheckAccountTokenDTO> { Data = AccountToken };
 
         }
 
@@ -63,7 +61,7 @@ namespace TekenTracker.UnitTests.FakeDB
             user.TokenValidUntil = DateTime.Now.AddSeconds(-600);
         }
 
-        public bool tryAddUserToDB(NewUserDto newUser)
+        public SimpleResult AddUserToDB(NewUserDto newUser)
         {
             User user = new User();
             Encryption encryption = new Encryption();
@@ -75,28 +73,38 @@ namespace TekenTracker.UnitTests.FakeDB
 
             container.users.Add(user);
 
-            return true;
+            return new SimpleResult();
         }
 
-        public bool TryGetUser(string Username, out User? user)
+        public Result<User> GetUser(string Username)
         {
+            User user;
             if (container.users.Select(u => u.userName).Contains(Username))
             {
                 user = container.users.Where(u => u.userName == Username).First();
-                return true;
+                return new Result<User> { Data = user };
             }
             else
             {
                 user = null;
-                return false;
+                return new Result<User> { ErrorMessage = "user not found[unit tests]"};
             }
         }
 
-        public bool tryRemoveUserFromDB(int UserId)
+        public SimpleResult RemoveUserFromDB(int UserId)
         {
             container.users.Remove(container.users.Where(u=>u.userId == UserId).First());
 
-            return !container.users.Select(u => u.userId).Contains(UserId);
+            if(!container.users.Select(u => u.userId).Contains(UserId))
+            {
+
+                return new SimpleResult();
+            }
+            else
+            {
+
+                return new SimpleResult { ErrorMessage = "something went wrong with removing an user[unit tests]" };
+            }
         }
     }
 }

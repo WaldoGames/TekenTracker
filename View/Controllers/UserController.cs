@@ -1,10 +1,12 @@
 ﻿using Core.Classes.DTO;
 using Core.Classes.Models;
 using Core.Classes.Services;
+using Core.Classes;
 using Dal.Classes.RepositoryImplementations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using MySqlX.XDevAPI.Common;
 using System.Text;
 using View.Models;
 
@@ -34,13 +36,15 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(LoginObject LoginObject)
         {
-            
-            if (!userService.TryLogin(LoginObject.username, LoginObject.password, out UserDto user))
+
+            Result<LoginDto> loginDto = userService.TryLogin(LoginObject.username, LoginObject.password);
+
+            if (loginDto.IsFailed || loginDto.Data.IsLoggedIn == false || loginDto.Data.User == null)
             {
-                return View();
+                return View("");
             }
 
-            sessionController.AddUserToSession(user);
+            sessionController.AddUserToSession(loginDto.Data.User);
 
             return RedirectToAction("LogedIn");
         }

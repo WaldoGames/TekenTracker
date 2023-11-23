@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using System;
 using System.Collections.Generic;
@@ -10,17 +11,17 @@ namespace Core.Interfaces.Repository
 {
     public interface ITagRepository
     {
-        public bool TryGetAllTags(out List<Tag> tags);
-        public bool TryAddNewTagToDB(string tagName);
-        public bool TryRemoveStringFromDB(int tagId);
-        public bool TryGetTags(GetTagsDto getTagsDto, out List<Tag> tags);
-        public bool TryGetTagsFromPost(int postId, out List<Tag> tags);
+        public Result<List<Tag>> GetAllTags();
+        public SimpleResult AddNewTagToDB(string tagName);
+        public SimpleResult RemoveStringFromDB(int tagId);
+        public Result<List<Tag>> GetTags(GetTagsDto getTagsDto);
+        public Result<List<Tag>> GetTagsFromPost(int postId);
 
-        public bool TryGetTagsUsedByUser(int userId, out List<Tag> tags);
-        public bool DoesPostHaveTag(int postId, int tagId);
+        public Result<List<Tag>> GetTagsUsedByUser(int userId);
+        public Result<bool> DoesPostHaveTag(int postId, int tagId);
 
-        public bool TryAddTagToPost(int postId, int tagId);
-        public bool TryRemoveTagFromPost(int postId, int tagId);
+        public SimpleResult AddTagToPost(int postId, int tagId);
+        public SimpleResult RemoveTagFromPost(int postId, int tagId);
 
     }
 }

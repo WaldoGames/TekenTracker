@@ -33,103 +33,123 @@ namespace Core.Classes.Services
             
         }
 
-        public bool TryGetMainPagePosts(GetOverviewMantPostsDto paramaters, out OverviewManyPostsDto posts)
+        public Result<OverviewManyPostsDto> GetMainPagePosts(GetOverviewMantPostsDto paramaters)
         {
-            posts = null;
+            Result<OverviewManyPostsDto> posts = PostRepository.GetOverviewPost(paramaters);
 
-            try
+            if (posts.IsFailed)
             {
-                if (PostRepository.TryGetOverviewPost(paramaters, out posts))
-                {
-                    foreach (var post in posts.Posts)
-                    {
-                        if (TagRepository.TryGetTagsFromPost(post.postId,out List<Tag> tags))
-                        {
-                            post.Tags = tags;
-                        }
-                    }
-                    return true;
-                }
-                return false;
+                return new Result<OverviewManyPostsDto> { ErrorMessage = "PostService->TryGetMainPagePosts Post could not be found" };
             }
-            catch (Exception ex) { }
+            if(posts.Data == null)
             {
+                posts.Data = new OverviewManyPostsDto();
+            }
+            foreach (var post in posts.Data.Posts)
+            {
+                Result<List<Tag>> tags = TagRepository.GetTagsFromPost(post.postId);
 
-                return false;
-            }         
+                if (tags.IsFailed)
+                {
+                    return new Result<OverviewManyPostsDto> { ErrorMessage = "PostService->TryGetMainPagePosts Failed to get tags" };
+                }
+                if (tags.Data == null)
+                {
+                    tags.Data = new List<Tag>();
+                }
+                post.Tags = tags.Data;
+            }
+            return posts;
+        }  
+            
+
+        public Result<Post> GetDetailedPost(int postId)
+        {
+            Result<Post> post = PostRepository.GetDetailedPost(postId);
+
+            if (post.IsFailed)
+            {
+                return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost passed from PostRepository->GetDetailedPost" };
+            }
+            if (post.Data == null)
+            {
+                return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Post not found" };
+            }
+            Result<NotesDto> notes = NoteRepository.GetNotesFromPost(postId);
+
+            if (notes.IsFailed)
+            {
+                return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get notes" };
+            }
+            post.Data.notes = notes.Data.Notes;
+
+            Result<SubimagesDto> subimages = SubImageRepository.GetSubimagesFromPost(postId);
+
+            if (subimages.IsFailed)
+            {
+                return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get Subimages" };
+            }
+            post.Data.subImages = subimages.Data.images;
+
+            Result<List<Tag>> tags = TagRepository.GetTagsFromPost(postId);
+
+            if (tags.IsFailed)
+            {
+                return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get tags" };
+            }
+            post.Data.tags = tags.Data;
+
+            return post;
         }
+        public Result<int> PostPostToDB(NewPostDto newPost)
+        {
+            Result<int> newPostId = PostRepository.AddNewPostToDB(newPost);
 
-        public bool TryGetDetailedPost(int postId, out Post post)
-        {
-            post = null;
-            try
+            if (newPostId.IsFailed)
             {
-                if (PostRepository.TryGetDetailedPost(postId, out post))
+                return new Result<int> { ErrorMessage = "PostService->PostPostToDB failed to post post" };
+            }
+
+            if(newPost.Notes != null)
+            {
+                NewNoteDto newNoteDto = new NewNoteDto();
+                newNoteDto.Text = newPost.Notes;
+                newNoteDto.PostId = newPostId.Data;
+                SimpleResult result = NoteServices.AddNewNote(newNoteDto);
+                if (result.IsFailed)
                 {
-                    if (NoteRepository.TryGetNotesFromPost(postId, out NotesDto notes))
-                        post.notes = notes.Notes;
-                    if (SubImageRepository.TryGetSubimagesFromPost(postId, out SubimagesDto subimages))
-                        post.subImages = subimages.images;
-                    if(TagRepository.TryGetTagsFromPost(postId, out List<Tag> tags))
-                        post.tags = tags;
-                       
-                    return true;
+                    return new Result<int> { ErrorMessage = "PostService->TryPostPostToDB failed to add notes to post" };
+
                 }
-                return false;
             }
-            catch (Exception ex) { }
+            if (newPost.SubImages != null)
             {
-                return false;
-            }
-        }
-        public bool TryPostPostToDB(NewPostDto newPost, out int PostId)
-        {
-            try
-            {
-                PostRepository.TryAddNewPostToDB(newPost, out PostId);
- 
-                if(newPost.Notes != null)
+                SimpleResult result = SubimageService.AddManySubimagesNewPost(newPost.SubImages, newPostId.Data);
+                if (result.IsFailed)
                 {
-                    NewNoteDto newNoteDto = new NewNoteDto();
-                    newNoteDto.Text = newPost.Notes;
-                    newNoteDto.PostId = PostId;
-                    NoteServices.TryAddNewNote(newNoteDto);
+                    return new Result<int> { ErrorMessage = "PostService->TryPostPostToDB failed to add subimages to post" };
                 }
-                if(newPost.SubImages != null)
-                {
-                    SubimageService.TryAddManySubimagesNewPost(newPost.SubImages, PostId);
-                }                
-                return true;
             }
-            catch (Exception)
-            {
-                PostId = -1;
-                return false;
-            }
+
+            return new Result<int> { Data = newPostId.Data };
             
         }
 
-        public bool TryDeletePost(int postId)
+        public SimpleResult DeletePost(int postId)
         {
-            if (PostRepository.doesPostExist(postId))
-            {
-                //remove subimages belonging to post
+            Result<bool> result= PostRepository.doesPostExist(postId);
 
-                //remove notes belonging to post
-                return PostRepository.TryRemovePostToDB(postId);       
+            if (result.IsFailed)
+            {
+                return new SimpleResult { ErrorMessage = "PostService->DeletePost could not confirm exisitance of post" };
             }
-            return false;
+
+            return PostRepository.RemovePostToDB(postId);
         }  
-        public bool TryGetTagsFromPost(int postId, out List<Tag> tags)
+        public Result<List<Tag>> GetTagsFromPost(int postId)
         {
-            try
-            {
-                return TagRepository.TryGetTagsFromPost(postId, out tags);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            return TagRepository.GetTagsFromPost(postId);
+
         }
         
     }

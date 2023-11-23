@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,10 @@ namespace Core.Interfaces.Repository
 {
     public interface ISubImageRepository
     {
-        public bool TryGetSubimagesFromPost(int PostId, out SubimagesDto notes);
-        public bool TryAddNewSubimage(int PostId, string NewUrl);
-        public bool TryUpdateSubimage(int PostId, string UpdatesUrl);
-        public bool TryRemoveNewSubimage(int SubimageId);
-        public bool DoesSubimageExist(int SubimageId);
+        public Result<SubimagesDto> GetSubimagesFromPost(int PostId);
+        public SimpleResult AddNewSubimage(int PostId, string NewUrl);
+        public SimpleResult UpdateSubimage(int PostId, string UpdatesUrl);
+        public SimpleResult RemoveNewSubimage(int SubimageId);
+        public Result<bool> DoesSubimageExist(int SubimageId);
     }
 }

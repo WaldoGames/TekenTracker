@@ -48,7 +48,7 @@ namespace TekenTracker.UnitTests
         {
             UserService userService = new UserService(new UserRepository());
             
-            Assert.True(userService.TryLogin("FirstUser", "helloWorldPassWord", out UserDto user));
+            Assert.True(userService.TryLogin("FirstUser", "helloWorldPassWord").Data.IsLoggedIn);
 
         }
 
@@ -58,7 +58,7 @@ namespace TekenTracker.UnitTests
 
             UserService userService = new UserService(new UserRepository());
             
-            Assert.False(userService.TryLogin("TotalyRealUser", "helloWorldPassWord", out UserDto user));
+            Assert.False(userService.TryLogin("TotalyRealUser", "helloWorldPassWord").Data.IsLoggedIn);
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace TekenTracker.UnitTests
         {
             UserService userService = new UserService(new UserRepository());
 
-            Assert.False(userService.TryLogin("FirstUser", "p2ssw0r3", out UserDto user));
+            Assert.False(userService.TryLogin("FirstUser", "p2ssw0r3").Data.IsLoggedIn);
 
         }
 
@@ -116,9 +116,9 @@ namespace TekenTracker.UnitTests
         {
             UserService userService = new UserService(new UserRepository());
 
-            userService.TryLogin("FirstUser", "helloWorldPassWord", out UserDto userDto);
+            Result<LoginDto> result= userService.TryLogin("FirstUser", "helloWorldPassWord");
 
-            Assert.True(userService.ChecKLoginStatus(userDto));
+            Assert.True(userService.ChecKLoginStatus(result.Data.User).Data);
         }
         [Fact]
         public void CheckLoginStatusOld()
@@ -127,11 +127,11 @@ namespace TekenTracker.UnitTests
 
             UserService userService = new UserService(userRepository);
 
-            userService.TryLogin("FirstUser", "helloWorldPassWord", out UserDto userDto);
+            Result<LoginDto> LoginDto = userService.TryLogin("FirstUser", "helloWorldPassWord");
 
-            userRepository.testMoveTokenValidTimeToPast(userDto.userId);
+            userRepository.testMoveTokenValidTimeToPast(LoginDto.Data.User.userId);
 
-            Assert.False(userService.ChecKLoginStatus(userDto));
+            Assert.False(userService.ChecKLoginStatus(LoginDto.Data.User).Data);
         }
 
     }

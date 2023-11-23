@@ -1,4 +1,5 @@
-﻿using Core.Classes.DTO;
+﻿using Core.Classes;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
 using System;
@@ -19,9 +20,9 @@ namespace TekenTracker.UnitTests.FakeDB
         }
 
 
-        public bool ChangeMainImageInDB(int PostId, string NewUrl, out string OldUrl)
+        public Result<string> ChangeMainImageInDB(int PostId, string NewUrl)
         {
-            OldUrl = "";
+            string OldUrl = "";
             try
             {
             Post post = container.posts.Where(p => p.postId == PostId).First();
@@ -30,20 +31,20 @@ namespace TekenTracker.UnitTests.FakeDB
 
             post.mainImageUrl = NewUrl;
 
-            return true;
+            return new Result<string> {Data = OldUrl};
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                return new Result<string> { ErrorMessage = "something went wrong change mainimage[Unit test]" };
             }
         }
 
-        public bool doesPostExist(int postId)
+        public Result<bool> doesPostExist(int postId)
         {
-            return container.posts.Select(p => p.postId).Contains(postId);
+            return new Result<bool> { Data = container.posts.Select(p => p.postId).Contains(postId) };
         }
 
-        public bool TryAddNewPostToDB(NewPostDto post, out int PrimaryKeyValue)
+        public Result<int> AddNewPostToDB(NewPostDto post)
         {
             Post newPost = new Post();
 
@@ -52,26 +53,31 @@ namespace TekenTracker.UnitTests.FakeDB
             newPost.postDate = DateTime.Now;
             newPost.postId = container.posts.Select(p => p.postId).Max();
 
-            PrimaryKeyValue = newPost.postId;
+            int PrimaryKeyValue = newPost.postId;
 
-            return true;
+            
+            return new Result<int> { Data= PrimaryKeyValue};
 
             //newPost.subImages = post.SubImages;
         }
 
-        public bool TryGetDetailedPost(int PostId, out Post post)
+        public Result<Post> GetDetailedPost(int PostId)
         {
-            post = container.posts.Where(p => p.postId == PostId).First();
+            Post post = container.posts.Where(p => p.postId == PostId).First();
 
-            return true;
+            if(post == null)
+            {
+                return new Result<Post> { ErrorMessage = "get detailed post went wrong [unit test]" };
+            }
+            return new Result<Post> { Data = post };
         }
 
-        public bool TryGetOverviewPost(GetOverviewMantPostsDto getPostsDto, out OverviewManyPostsDto overview)
+        public Result<OverviewManyPostsDto> GetOverviewPost(GetOverviewMantPostsDto getPostsDto)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryRemovePostToDB(int PostId)
+        public SimpleResult RemovePostToDB(int PostId)
         {
             throw new NotImplementedException();
         }
