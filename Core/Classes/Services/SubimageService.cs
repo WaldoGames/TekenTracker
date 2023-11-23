@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Core.Classes.Services
 {
-    internal class SubimageService
+    public class SubimageService
     {
         ISubImageRepository SubimageRepository;
 

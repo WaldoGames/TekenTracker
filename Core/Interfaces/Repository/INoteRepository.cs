@@ -13,6 +13,8 @@ namespace Core.Interfaces.Repository
     public interface INoteRepository
     {
         public Result<NotesDto> GetNotesFromPost(int PostId);
+
+        public Result<NotesDto> GetNoteById(int NoteId);
         public SimpleResult AddNewNote(int PostId, string NewNote);
         public SimpleResult RemoveNewNote(int NoteId);
         public SimpleResult UpdateNote(int NoteId, string NewText);

@@ -39,6 +39,16 @@
             }
             </div>
         }
+        <dt class="col-sm-2">
+            Notes:
+        </dt>
+        @if(Model.notes != null)
+        {
+            @foreach(var note in Model.notes.OrderBy(n => n.uploadDate).ToList())
+            {
+                <p>@note.text</p>
+            }
+        }
         <div id="imageModal" class="modal">
             <span class="close" onclick="closePopup()">&times;</span>
             <div class="popup">
@@ -54,6 +64,7 @@
 </div>
 <div>
     @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.postId  }) |
+    @Html.ActionLink("Add new note", "Create", "Note", new { id = Model.postId }) |
     <a asp-action="Index">Back to List</a>
 </div>
 
@@ -118,11 +129,11 @@
     }
 </style>
 <script>
+    //Subimage vars
     var images = @Html.Raw(Json.Serialize(Model.subImages.Select(s=>s.imageUrl).ToList()));
+    var currentGalleryIndex = 0;
 
-
-    var currentIndex = 0;
-
+    //Subimage funtions
     function showPopup(imageUrl, showSlidingButtons) {
         var modal = document.getElementById("imageModal");
         var fullImage = document.getElementById("fullImage");
@@ -131,25 +142,22 @@
 
         slideButtonVisible(showSlidingButtons)
 
-        currentIndex = images.indexOf(imageUrl);
+        currentGalleryIndex = images.indexOf(imageUrl);
     }
     function changeImage(offset) {
-        // Calculate the new index
-        currentIndex += offset;
-        //console.log(JSON.parse('@Html.Raw(Model.subImages.Select(s=>s.imageUrl))');)
-        // Wrap around the gallery if you reach the end
-        if (currentIndex >= images.length) {
-            currentIndex = 0;
-        } else if (currentIndex < 0) {
-            currentIndex = images.length - 1;
+
+        currentGalleryIndex += offset;
+
+        if (currentGalleryIndex >= images.length) {
+            currentGalleryIndex = 0;
+        } else if (currentGalleryIndex < 0) {
+            currentGalleryIndex = images.length - 1;
         }
 
-        // Get the new image URL and update the image source
         var newImage = images[currentIndex];
         var fullImage = document.getElementById("fullImage");
         fullImage.src = "/Images/" + newImage;
     }
-
     function slideButtonVisible(visible) {
         var left = document.getElementById("left");
         var right = document.getElementById("right");
@@ -161,10 +169,10 @@
             right.style.display = "none";
         }
     }
-
-    // Function to close the popup
     function closePopup() {
         var modal = document.getElementById("imageModal");
         modal.style.display = "none";
     }
+
+
 </script>

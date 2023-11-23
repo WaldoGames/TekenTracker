@@ -40,7 +40,7 @@ namespace Dal.Classes.RepositoryImplementations
             }
             catch (Exception e)
             {
-                return new SimpleResult { ErrorMessage = e.Message };
+                return new SimpleResult { ErrorMessage = "NoteRepository->AddNewNote" + e.Message };
                 throw;
             }
         }

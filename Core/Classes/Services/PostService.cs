@@ -17,7 +17,7 @@ namespace Core.Classes.Services
         ISubImageRepository SubImageRepository;
         ITagRepository TagRepository;
         TagService TagService;
-        NoteServices NoteServices;
+        NoteService NoteServices;
         SubimageService SubimageService;
 
         public PostService(IPostRepository postRepository, INoteRepository noteRepository, ISubImageRepository subImageRepository, ITagRepository tagRepository)
@@ -28,7 +28,7 @@ namespace Core.Classes.Services
             this.TagRepository = tagRepository;
 
             TagService = new TagService(TagRepository);
-            NoteServices = new NoteServices(NoteRepository);
+            NoteServices = new NoteService(NoteRepository);
             SubimageService = new SubimageService(SubImageRepository);
             
         }

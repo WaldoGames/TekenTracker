@@ -13,7 +13,7 @@ namespace Core.Classes
         public string ErrorMessage
         {
             get { return errorMessage; }
-            set { errorMessage = value; log.Log(value); }
+            set { errorMessage = "\n"+value; log.Log(value); }
         }
 
         public bool IsFailed => !string.IsNullOrEmpty(ErrorMessage);
@@ -32,7 +32,7 @@ namespace Core.Classes
 
         public void Log(string message)
         {
-            File.AppendAllText(path + filename, DateTime.Now.ToShortTimeString() +": "+ message);
+            File.AppendAllText(path + filename, "\n"+DateTime.Now.ToShortTimeString() +": "+ message);
         }
     }
 }

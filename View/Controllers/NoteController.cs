@@ -1,0 +1,73 @@
+﻿using Core.Classes.DTO;
+using Core.Classes.Services;
+using Core.Classes;
+using Microsoft.AspNetCore.Mvc;
+using View.Models;
+using Dal.Classes.RepositoryImplementations;
+using Microsoft.Extensions.Caching.Memory;
+
+namespace View.Controllers
+{
+    public class NoteController : LoggedinControllerBase
+    {
+        PostService postService;
+        TagService tagService;
+        NoteService noteService;
+        SessionController sessionController;
+        IWebHostEnvironment webHost;
+
+        public NoteController(IMemoryCache cache, IWebHostEnvironment webHost) : base(cache)
+        {
+            postService = new PostService(new PostRepository(), new NoteRepository(), new SubimageRepository(), new TagRepository());
+            tagService = new TagService(new TagRepository());
+            noteService = new NoteService(new NoteRepository());
+            sessionController = new SessionController(cache);
+            this.webHost = webHost;
+        }
+        public ActionResult Create(int id)
+        {
+            NewNoteDto newNote = new NewNoteDto();
+
+            newNote.PostId = id;
+
+            return View(newNote);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(int id, NewNoteDto newNote)
+        {
+            newNote.PostId = id;
+            //create the post (make sure to return the id)
+            if (!CheckLogin(out ActionResult LoginView))
+            {
+                return LoginView;
+            }
+
+            SimpleResult result = noteService.AddNewNote(newNote);
+            if (result.IsFailed)
+            {
+                return View("error");
+            }
+
+            return RedirectToAction("Details", "Post", new { id = id });//return tagedit window(make sure id is in link)
+        }
+
+        public ActionResult Edit(int id)
+        {
+            EditNoteDto newNote = new EditNoteDto();
+
+            newNote.NoteId = id;
+            newNote.Text = noteService.
+
+            return View(newNote);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int id)
+        {
+
+        }
+    }
+}

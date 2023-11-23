@@ -1,4 +1,5 @@
 ﻿using Core.Classes.DTO;
+using Core.Classes.Models;
 using Core.Interfaces.Repository;
 using System;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Core.Classes.Services
 {
-    internal class NoteServices
+    public class NoteService
     {
         INoteRepository noteRepository;
 
-        public NoteServices(INoteRepository noteRepository)
+        public NoteService(INoteRepository noteRepository)
         {
             this.noteRepository = noteRepository;
         }
@@ -31,6 +32,25 @@ namespace Core.Classes.Services
                 }
             }
             return new SimpleResult { };
+        }
+
+        public SimpleResult UpdateNote(EditNoteDto Note)
+        {
+            return noteRepository.UpdateNote(Note.NoteId, Note.Text);
+        }
+
+        public Result<Note> GetNoteById(int noteId)
+        {
+            Result<bool> resultExist = noteRepository.DoesNoteExist(noteId);
+
+            if (resultExist.IsFailed) {
+            return new Result<Note> { ErrorMessage = "NoteService->GetNoteById: error passed from noteRepository->doesNoteExist"}
+            }
+
+            if(resultExist.Data == false)
+            {
+                Result<Note> result = noteRepository.
+            }
         }
     }
 }
