@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using View.Models;
 using Dal.Classes.RepositoryImplementations;
 using Microsoft.Extensions.Caching.Memory;
+using Core.Classes.Models;
 
 namespace View.Controllers
 {
@@ -57,16 +58,44 @@ namespace View.Controllers
         {
             EditNoteDto newNote = new EditNoteDto();
 
+
+            NullableResult<Note> note = noteService.GetNoteById(id);
+
+            if (note.IsEmpty)
+            {
+                //not found
+            }
+            if (note.IsFailed)
+            {
+                //error
+            }
+
+
             newNote.NoteId = id;
-            newNote.Text = noteService.
+            newNote.Text = note.Data.text;
+            newNote.PostId = note.Data.postId;
 
             return View(newNote);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int id, EditNoteDto note)
         {
+            note.NoteId = id;
+            SimpleResult result = noteService.UpdateNote(note);
+
+            if (result.IsFailed)
+            {
+                return View("Error");
+            }
+            NullableResult<Note> ReturnNote = noteService.GetNoteById(id);
+            if (ReturnNote.IsFailed || ReturnNote.IsEmpty)
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction("Details", "Post", new { id = ReturnNote.Data.postId });//return tagedit window(make sure id is in link)
 
         }
     }

@@ -23,6 +23,19 @@ namespace Core.Classes
     public class Result<T> : SimpleResult
     {
         public T? Data { get; set; }
+
+    }
+
+    public class NullableResult<T> : Result<T>
+    {
+        public NullableResult()
+        {
+        }
+        public NullableResult(Result<T> result)
+        {
+            Data = result.Data;
+        }
+        public bool IsEmpty { get; set; } = false;
     }
     public class ErrorLog
     {

@@ -21,9 +21,27 @@ namespace Dal.Classes.RepositoryImplementations
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
 
-        public Result<string> ChangeMainImageInDB(int PostId, string NewUrl)
+        public SimpleResult ChangeMainImageInDB(int PostId, string NewUrl)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("UPDATE posts SET main_image_url=@newUrl WHERE post_id = @postId", con);
+                    cmd.Parameters.AddWithValue("@newUrl", NewUrl);
+                    cmd.Parameters.AddWithValue("@postId", PostId);
+                    cmd.CommandType = CommandType.Text;
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    con.Close();
+                    return new SimpleResult();
+                }
+            }
+            catch (Exception e)
+            {
+                return new SimpleResult { ErrorMessage = "PostRepositroy->ChangeMainImageInDB" + e.Message };
+                throw;
+            }
         }
 
         public Result<bool> doesPostExist(int postId)

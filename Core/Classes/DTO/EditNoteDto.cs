@@ -9,6 +9,7 @@ namespace Core.Classes.DTO
     public class EditNoteDto
     {
         public int NoteId { get; set; }
+        public int PostId { get; set; }
         public string Text { get; set; }
     }
 }

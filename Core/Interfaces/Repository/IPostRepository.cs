@@ -17,6 +17,6 @@ namespace Core.Interfaces.Repository
 
         public Result<Post> GetDetailedPost(int PostId);
         public Result<OverviewManyPostsDto> GetOverviewPost(GetOverviewMantPostsDto getPostsDto);
-        public Result<string> ChangeMainImageInDB(int PostId ,string NewUrl);
+        public SimpleResult ChangeMainImageInDB(int PostId ,string NewUrl);
     }
 }

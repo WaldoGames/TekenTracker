@@ -27,26 +27,35 @@
         <dd class = "col-sm-10">
             @Model.postDate.Date.ToShortDateString()
         </dd>
-        <dt class="col-sm-2">
-            Subimages:
-        </dt>
+
         @if(Model.subImages != null)
         {
+            if(Model.subImages.Count > 0){
+            <dt class="col-sm-2">
+                Subimages:
+            </dt>
             <div class="image-gallery">
             @foreach(var subimage in Model.subImages.OrderBy(s=>s.uploadDate).ToList())
             {
                     <img width="250" src="~/Images/@subimage.imageUrl" onclick="showPopup('@subimage.imageUrl', true)" />
             }
             </div>
+            }
         }
-        <dt class="col-sm-2">
-            Notes:
-        </dt>
+
         @if(Model.notes != null)
         {
-            @foreach(var note in Model.notes.OrderBy(n => n.uploadDate).ToList())
+            if (Model.notes.Count > 0)
             {
-                <p>@note.text</p>
+                <dt class="col-sm-2">
+                    Notes:
+                </dt>
+                @foreach (var note in Model.notes.OrderBy(n => n.uploadDate).ToList())
+                {
+                    <p>@note.text</p>
+
+                    @Html.ActionLink("Edit note", "Edit", "Note", new { id = note.noteId})
+                }
             }
         }
         <div id="imageModal" class="modal">
@@ -65,6 +74,8 @@
 <div>
     @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.postId  }) |
     @Html.ActionLink("Add new note", "Create", "Note", new { id = Model.postId }) |
+    @Html.ActionLink("Add new image to gallery", "AddSubImage", "Post", new { id = Model.postId }) |
+    @Html.ActionLink("Upload new main image", "ChangeMainImage", "Post", new { id = Model.postId }) |
     <a asp-action="Index">Back to List</a>
 </div>
 
@@ -154,7 +165,7 @@
             currentGalleryIndex = images.length - 1;
         }
 
-        var newImage = images[currentIndex];
+        var newImage = images[currentGalleryIndex];
         var fullImage = document.getElementById("fullImage");
         fullImage.src = "/Images/" + newImage;
     }

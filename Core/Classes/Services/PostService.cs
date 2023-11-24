@@ -3,6 +3,7 @@ using Core.Classes.Models;
 using Core.Interfaces.Repository;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -134,7 +135,6 @@ namespace Core.Classes.Services
             return new Result<int> { Data = newPostId.Data };
             
         }
-
         public SimpleResult DeletePost(int postId)
         {
             Result<bool> result= PostRepository.doesPostExist(postId);
@@ -150,6 +150,56 @@ namespace Core.Classes.Services
         {
             return TagRepository.GetTagsFromPost(postId);
 
+        }
+
+        public SimpleResult ChangeMainImageOfPost(int postId, string path, bool keepOldImageAsSubimage = true)
+        {
+            Result<Post> post = GetDetailedPost(postId);
+
+            if (post.IsFailed)
+            {
+                return new SimpleResult { ErrorMessage = "PostService->CopyMainImageToGallery failed to get post" };
+            }
+
+            if (keepOldImageAsSubimage)
+            {
+                SimpleResult copyResult = CopyMainImageToGallery(postId);
+                if (copyResult.IsFailed)
+                {
+                    return copyResult;
+                }
+            }
+            return PostRepository.ChangeMainImageInDB(postId, path);
+
+
+        }
+        private SimpleResult CopyMainImageToGallery(int postId)
+        {
+            Result<Post> post = GetDetailedPost(postId);
+
+            if (post.IsFailed)
+            {
+                return new SimpleResult { ErrorMessage = "PostService->CopyMainImageToGallery failed to get post" };
+            }
+            NewSubimageDto newSubimage = new NewSubimageDto { imageUrl = post.Data.mainImageUrl, postId = postId };
+
+            return SubimageService.AddNewSubimage(newSubimage);
+        }
+        public SimpleResult AddManySubimageToExistingPost(int postId, List<NewSubimageDto> images)
+        {
+            foreach (NewSubimageDto image in images)
+            {
+                SimpleResult tmpResult = AddSubimageToExistingPost(image);
+                if (tmpResult.IsFailed)
+                {
+                    return new SimpleResult { ErrorMessage = "PostService->AddManySubimageToExistingPost one or more images failed to post" };
+                }
+            }
+            return new SimpleResult();
+        }
+        public SimpleResult AddSubimageToExistingPost(NewSubimageDto newSubimage)
+        {
+            return SubimageService.AddNewSubimage(newSubimage);
         }
         
     }

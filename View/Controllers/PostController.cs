@@ -201,6 +201,49 @@ namespace View.Controllers
                 return View();
             }
         }
+
+        public ActionResult ChangeMainImage(int id)
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeMainImage(int id, NewMainImageModel model)
+        {
+            string path = UploadImage(model.Image);
+
+            SimpleResult result = postService.ChangeMainImageOfPost(id, path, model.MoveOldImageToSubimage);
+
+            if (result.IsFailed)
+            {
+                return View("error");
+            }
+
+            return RedirectToAction("Details", "Post", new { id = id });//return tagedit window(make sure id is in link)
+
+        }
+
+        public ActionResult AddSubImage(int id)
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddSubImage(int id, NewSubImagesModel model)
+        {
+            List<NewSubimageDto> images = UploadManyImages(model.subimages);
+
+            images.ForEach(i => i.postId = id);
+
+            SimpleResult result = postService.AddManySubimageToExistingPost(id ,images);
+
+            if (result.IsFailed)
+            {
+                return View("error");
+            }
+
+            return RedirectToAction("Details", "Post", new { id = id });
+        }
         private List<NewSubimageDto> UploadManyImages(List<IFormFile> images)
         {
             List<NewSubimageDto> newimages = new List<NewSubimageDto>();
@@ -212,6 +255,7 @@ namespace View.Controllers
             }
             return newimages;
         }
+
         private string UploadImage(IFormFile image)
         {
             string fileName = null;

@@ -39,18 +39,26 @@ namespace Core.Classes.Services
             return noteRepository.UpdateNote(Note.NoteId, Note.Text);
         }
 
-        public Result<Note> GetNoteById(int noteId)
+        public NullableResult<Note> GetNoteById(int noteId)
         {
             Result<bool> resultExist = noteRepository.DoesNoteExist(noteId);
 
             if (resultExist.IsFailed) {
-            return new Result<Note> { ErrorMessage = "NoteService->GetNoteById: error passed from noteRepository->doesNoteExist"}
+                return new NullableResult<Note> { ErrorMessage = "NoteService->GetNoteById: error passed from noteRepository->doesNoteExist" };
             }
 
             if(resultExist.Data == false)
             {
-                Result<Note> result = noteRepository.
+                return new NullableResult<Note> { IsEmpty = true };
             }
+
+            Result<Note> result= noteRepository.GetNoteById(noteId);
+
+            if (resultExist.IsFailed)
+            {
+                return new NullableResult<Note> { ErrorMessage = "NoteService->GetNoteById: error passed from noteRepository->GetNoteById" };
+            }
+            return new NullableResult<Note>(result);
         }
     }
 }
