@@ -85,9 +85,12 @@ namespace Core.Classes.Services
             return TagRepository.GetAllTags();
         }
 
-        public void CreateNewTag(string tagName, int tagType)
+        public SimpleResult CreateNewTag(string tagName, int tagType)
         {
+            //TODO:? check if tag/type combination already exists
 
+
+            return TagRepository.AddNewTagToDB(tagName, tagType);
         }
     }
 }

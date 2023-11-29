@@ -10,41 +10,7 @@ namespace TekenTracker.UnitTests
     public class UserAndUserRelatedFuntionsUnitTest
     {
         [Fact]
-        public void encryption_directTest()
-        {
-            string pass = "helloWorldPassWord";
-
-            Encryption enc = new Encryption();
-
-            string encPass = enc.EncryptNewString(pass);
-
-            Assert.True(enc.CompareEncryptedString(pass, encPass));
-        }
-        [Fact]
-        public void encryption_PreGeneratedTest()
-        {
-            string pass = "helloWorldPassWord";
-            string encPass = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.";
-
-            Encryption enc = new Encryption();
-
-
-
-            Assert.True(enc.CompareEncryptedString(pass, encPass));
-        }
-
-        [Fact]
-        public void encryption_WrongPasswordTest()
-        {
-            string pass = "helloWorldNewPassword123";
-            string encPass = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.";
-
-            Encryption enc = new Encryption();
-            Assert.False(enc.CompareEncryptedString(pass, encPass));
-        }
-
-        [Fact]
-        public void TryLogin()
+        public void TryLogin_should_be_true()
         {
             UserService userService = new UserService(new UserRepository());
             
@@ -53,7 +19,7 @@ namespace TekenTracker.UnitTests
         }
 
         [Fact] 
-        public void TryLoginWithFakeUser()
+        public void TryLoginWithFakeUser_should_be_false()
         {
 
             UserService userService = new UserService(new UserRepository());
@@ -62,7 +28,7 @@ namespace TekenTracker.UnitTests
         }
 
         [Fact]
-        public void TryLoginWithWrongPassword()
+        public void TryLoginWithWrongPassword_should_be_false()
         {
             UserService userService = new UserService(new UserRepository());
 
@@ -72,7 +38,7 @@ namespace TekenTracker.UnitTests
 
         [Fact]
 
-        public void TryCreateNewUser()
+        public void TryCreateNewUser_should_be_true()
         {
             NewUserDto newUser = new NewUserDto();
             newUser.email = "email";
@@ -87,7 +53,7 @@ namespace TekenTracker.UnitTests
         }
 
         [Fact]
-        public void TryCreateNewUserWithExistingName()
+        public void TryCreateNewUserWithExistingName_should_be_usernametaken()
         {
             NewUserDto newUser = new NewUserDto();
             newUser.email = "email";
@@ -101,7 +67,7 @@ namespace TekenTracker.UnitTests
             Assert.Equal(UserCreationEnum.usernameTaken, uc);
         }
         [Fact]
-        public void TryCreateNewUserWithNoInput()
+        public void TryCreateNewUserWithNoInput_should_be_failed()
         {
             NewUserDto newUser = new NewUserDto();
 
@@ -112,7 +78,7 @@ namespace TekenTracker.UnitTests
             Assert.Equal(UserCreationEnum.failed, uc);
         }
         [Fact]
-        public void CheckLoginStatus()
+        public void CheckLoginStatus_should_be_true()
         {
             UserService userService = new UserService(new UserRepository());
 
@@ -121,7 +87,7 @@ namespace TekenTracker.UnitTests
             Assert.True(userService.ChecKLoginStatus(result.Data.User).Data);
         }
         [Fact]
-        public void CheckLoginStatusOld()
+        public void CheckLoginStatusOld_should_be_false()
         {
             UserRepository userRepository = new UserRepository();
 

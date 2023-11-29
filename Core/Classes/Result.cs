@@ -13,7 +13,7 @@ namespace Core.Classes
         public string ErrorMessage
         {
             get { return errorMessage; }
-            set { errorMessage = "\n"+value; log.Log(value); }
+            set { errorMessage = Environment.NewLine+value; log.Log(value); }
         }
 
         public bool IsFailed => !string.IsNullOrEmpty(ErrorMessage);

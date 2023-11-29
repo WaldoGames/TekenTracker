@@ -62,8 +62,6 @@ namespace Core.Classes.Services
             }
             return posts;
         }  
-            
-
         public Result<Post> GetDetailedPost(int postId)
         {
             Result<Post> post = PostRepository.GetDetailedPost(postId);

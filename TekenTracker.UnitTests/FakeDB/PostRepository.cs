@@ -20,7 +20,7 @@ namespace TekenTracker.UnitTests.FakeDB
         }
 
 
-        public Result<string> ChangeMainImageInDB(int PostId, string NewUrl)
+        public SimpleResult ChangeMainImageInDB(int PostId, string NewUrl)
         {
             string OldUrl = "";
             try
@@ -31,11 +31,11 @@ namespace TekenTracker.UnitTests.FakeDB
 
             post.mainImageUrl = NewUrl;
 
-            return new Result<string> {Data = OldUrl};
+            return new SimpleResult();
             }
             catch (Exception e)
             {
-                return new Result<string> { ErrorMessage = "something went wrong change mainimage[Unit test]" };
+                return new SimpleResult { ErrorMessage = "something went wrong change mainimage[Unit test]" };
             }
         }
 

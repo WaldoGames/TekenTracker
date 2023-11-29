@@ -50,9 +50,30 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public SimpleResult AddNewTagToDB(string tagName)
+        public SimpleResult AddNewTagToDB(string tagName, int type)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+                    cmd.CommandText = "INSERT INTO tag(title,type) VALUES(@tagName, @type)";
+                    cmd.Parameters.AddWithValue("@tagName", tagName);
+                    cmd.Parameters.AddWithValue("@type", type);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandType = CommandType.Text;
+
+                    con.Close();
+                    return new SimpleResult();
+                }
+            }
+            catch (Exception e)
+            {
+                return new SimpleResult { ErrorMessage = "TagRepository->AddNewTagToDB: " + e.Message };
+                throw;
+            }
         }
 
         public SimpleResult AddTagToPost(int postId, int tagId)

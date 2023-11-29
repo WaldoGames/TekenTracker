@@ -12,7 +12,7 @@ namespace Core.Interfaces.Repository
     public interface ITagRepository
     {
         public Result<List<Tag>> GetAllTags();
-        public SimpleResult AddNewTagToDB(string tagName);
+        public SimpleResult AddNewTagToDB(string tagName, int Type);
         public SimpleResult RemoveStringFromDB(int tagId);
         public Result<List<Tag>> GetTags(GetTagsDto getTagsDto);
         public Result<List<Tag>> GetTagsFromPost(int postId);
