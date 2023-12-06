@@ -242,5 +242,30 @@ namespace Dal.Classes.RepositoryImplementations
                 return new Result<List<Tag>> { ErrorMessage = "TagRepository->TryRemoveTagFromPost: " + e.Message };
             }
         }
+
+        public Result<tag>
+
+        /*SELECT
+    COUNT(`tag`.`tag_id`) as `count`,
+    `tag`.`tag_id` as `tagId`,
+    `tag`.`title` as `title`,
+    `tag`.`type` as `type`
+FROM
+    (
+        (SELECT `post_id`
+         FROM `posts`
+         WHERE `user_id` = 10
+         ORDER BY `post_date` DESC
+         LIMIT 2) AS `recent_posts`
+        INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`
+    )
+    INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`
+GROUP BY
+    `tag`.`tag_id`
+ORDER BY
+    COUNT(`tag`.`tag_id`) DESC; -- Optional: You can change the ORDER BY clause based on your requirements
+*/
+
+        //SELECT COUNT(`tag`.`tag_id`) as `count`, `tag`.`tag_id` as `tagId`, `tag`.`title` as `title`, `tag`.`type` as `type` FROM ((`posts` INNER JOIN `posttag` ON `posttag`.`post_id` = `posts`.`post_id`) INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`) WHERE `posts`.`user_id`=10 GROUP BY `tag`.`tag_id`
     }
 }

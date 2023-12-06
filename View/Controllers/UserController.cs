@@ -41,7 +41,7 @@ namespace View.Controllers
 
             if (loginDto.IsFailed || loginDto.Data.IsLoggedIn == false || loginDto.Data.User == null)
             {
-                return View("");
+                return View();
             }
 
             sessionController.AddUserToSession(loginDto.Data.User);
