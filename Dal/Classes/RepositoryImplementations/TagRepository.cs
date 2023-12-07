@@ -257,16 +257,16 @@ namespace Dal.Classes.RepositoryImplementations
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
 
-                    cmd.CommandText =   "SELECT" +
-                                        "COUNT(`tag`.`tag_id`) as `count`," +
-                                        "`tag`.`tag_id` as `tagId`,`tag`.`title` as `title`, " +
-                                        "`tag`.`type` as `type` FROM((SELECT `post_id` FROM `posts` WHERE `user_id` = @userid" +
-                                        "ORDER BY `post_date` DESC" +
-                                        "LIMIT @limit) AS `recent_posts`" +
-                                        "INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`)" +
-                                        "INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`" +
-                                        "WHERE `tag`.`type` = 2" +
-                                        "GROUP BY `tag`.`tag_id` ORDER BY COUNT(`tag`.`tag_id`) DESC;";
+                    cmd.CommandText =   "SELECT " +
+                                        "COUNT(tag.tag_id) as count," +
+                                        "tag.tag_id as tagId,tag.title as title, " +
+                                        "tag.type as type FROM((SELECT post_id FROM posts WHERE user_id = @userid " +
+                                        "ORDER BY post_date DESC " +
+                                        "LIMIT @limit) AS recent_posts " +
+                                        "INNER JOIN posttag ON posttag.post_id = recent_posts.post_id) " +
+                                        "INNER JOIN tag ON posttag.tag_id = tag.tag_id " +
+                                        "WHERE tag.type = 2 " +
+                                        "GROUP BY tag.tag_id ORDER BY COUNT(tag.tag_id) DESC; ";
                     cmd.Parameters.AddWithValue("@userid", UserId); 
                     cmd.Parameters.AddWithValue("@limit", Reach);
                     cmd.CommandType = CommandType.Text;
@@ -309,21 +309,21 @@ namespace Dal.Classes.RepositoryImplementations
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
 
-                    cmd.CommandText =   "SELECT"+
-                                        "COUNT(`tag`.`tag_id`) as `count`,"+
-                                            "`tag`.`tag_id` as `tagId`," +
-                                            "`tag`.`title` as `title`," +
-                                            "`tag`.`type` as `type`" +
-                                        "FROM((SELECT `post_id`" +
-                                                 "FROM `posts`" +
-                                                 "WHERE `user_id` = @userid" +
-                                                    "AND `post_date` >= DATE_SUB(NOW(), INTERVAL @limit DAY)" +
-                                                 "ORDER BY `post_date` DESC) AS `recent_posts`" +
-                                                "INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`)" +
-                                            "INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`" +
-                                        "WHERE `tag`.`type` = 2" +
-                                        "GROUP BY `tag`.`tag_id`" +
-                                        "ORDER BY COUNT(`tag`.`tag_id`) DESC; ";
+                    cmd.CommandText =   "SELECT "+
+                                        "COUNT(tag.tag_id) as count,"+
+                                            "tag.tag_id as tagId," +
+                                            "tag.title as title," +
+                                            "tag.type as type " +
+                                        "FROM((SELECT post_id " +
+                                                 "FROM posts " +
+                                                 "WHERE user_id = @userid " +
+                                                    "AND post_date >= DATE_SUB(NOW(), INTERVAL @limit DAY) " +
+                                                 "ORDER BY post_date DESC) AS recent_posts " +
+                                                "INNER JOIN posttag ON posttag.post_id = recent_posts.post_id) " +
+                                            "INNER JOIN tag ON posttag.tag_id = tag.tag_id " +
+                                        "WHERE tag.type = 2 " +
+                                        "GROUP BY tag.tag_id " +
+                                        "ORDER BY COUNT(tag.tag_id) DESC; ";
                     cmd.Parameters.AddWithValue("@userid", UserId);
                     cmd.Parameters.AddWithValue("@limit", Reach);
                     cmd.CommandType = CommandType.Text;
@@ -355,29 +355,29 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
         /*SELECT
-                COUNT(`tag`.`tag_id`) as `count`,
-                `tag`.`tag_id` as `tagId`,
-                `tag`.`title` as `title`,
-                `tag`.`type` as `type`
+                COUNT(tag.tag_id) as count,
+                tag.tag_id as tagId,
+                tag.title as title,
+                tag.type as type
             FROM
                 (
-                    (SELECT `post_id`
-                     FROM `posts`
-                     WHERE `user_id` = @userid
-                     ORDER BY `post_date` DESC
-                     LIMIT @limit) AS `recent_posts`
-                    INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`
+                    (SELECT post_id
+                     FROM posts
+                     WHERE user_id = @userid
+                     ORDER BY post_date DESC
+                     LIMIT @limit) AS recent_posts
+                    INNER JOIN posttag ON posttag.post_id = recent_posts.post_id
                 )
-                INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`
+                INNER JOIN tag ON posttag.tag_id = tag.tag_id
             WHERE
-                `tag`.`type` = 2
+                tag.type = 2
             GROUP BY
-                `tag`.`tag_id`
+                tag.tag_id
             ORDER BY
-                COUNT(`tag`.`tag_id`) DESC;
+                COUNT(tag.tag_id) DESC;
 
 */
 
-        //SELECT COUNT(`tag`.`tag_id`) as `count`, `tag`.`tag_id` as `tagId`, `tag`.`title` as `title`, `tag`.`type` as `type` FROM ((`posts` INNER JOIN `posttag` ON `posttag`.`post_id` = `posts`.`post_id`) INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`) WHERE `posts`.`user_id`=10 GROUP BY `tag`.`tag_id`
+        //SELECT COUNT(tag.tag_id) as count, tag.tag_id as tagId, tag.title as title, tag.type as type FROM ((posts INNER JOIN posttag ON posttag.post_id = posts.post_id) INNER JOIN tag ON posttag.tag_id = tag.tag_id) WHERE posts.user_id=10 GROUP BY tag.tag_id
     }
 }

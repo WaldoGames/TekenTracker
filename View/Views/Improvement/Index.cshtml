@@ -1,8 +1,28 @@
-﻿@model View.Models.ImprovementViewModel
+﻿@using Core.Classes.DTO
+@model View.Models.ImprovementViewModel
 
 @{
     ViewData["Title"] = "Index";
 }
+<style>
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  padding: 10px;
+}
+.grid-item {
+  display: grid;
+  background-color: rgba(230, 228, 142, 0.8);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  margin: 20px;
+  font-size: 16px;
+  text-align: center;
+}
+.left{
+    width: 100%; align-content: start; text-align: left;
+}
+</style>
 
 <h1>Index</h1>
 
@@ -10,27 +30,43 @@
     <h4>ImprovementViewModel</h4>
     <hr />
 
+    <div class="grid-container">
          @foreach (var tag in Model.Returned as List<Core.Classes.DTO.TagAndAmount>)
                 {
-                    <p> @tag.count </p>
+                     <div class="grid-item"> <div class="left">@tag.count -  @tag.tag.name</div></div>
+                    
 
-                    <p>@tag.tag.name</p>
+                    
                 }
 
-        change settings:
+                </div class="grid-container">
 
-        <form method="GET">
+
+        <form method="POST">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <h4>change settings:</h4>
+        @foreach (TimeOrAmount tag in Model.TimeOrAmountEnum)
+        {
+            @tag.ToString()
+            @Html.RadioButtonFor(m => m.SearchLimits.timeOrAmount, tag.ToString(),new { @class = "item-radio", data_name = tag.ToString()})
+            <br />
+        }
 
-            @foreach (var tag in ViewBag.Tags as List<Core.Classes.Models.Tag>)
+        <div class="form-group">
+            @if(Model.SearchLimits.timeOrAmount == TimeOrAmount.time)
             {
-                <div>
-                    <label>
-                        <input type="checkbox" name="usedTags" value="@tag.tagId" />
-                        @tag.name
-                    </label>
-                </div>
+                <p id="reachLable">verbeter punten voor hoe veel dagen terug: </p>
             }
+            else
+            {
+                                <p id="reachLable">verbeter punten voor hoe veel posts terug: </p>
+            }
+            
+            <input asp-for="SearchLimits.Reach" class="form-control" />
+            <span asp-validation-for="SearchLimits.Reach" class="text-danger"></span>
+        </div>
+
+
 
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -40,6 +76,21 @@
     <dl class="row">
     </dl>
 </div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.item-radio').click(function () {
+            var itemName = $(this).data('name');
+            onRadioButtonClick(itemName);
+        });
+    });
+
+    function onRadioButtonClick(itemName) {
+        if (itemName == "amount") {
+            document.getElementById('reachLable').innerHTML = "verbeter punten voor hoe veel posts terug: "
+        } else if (itemName == "time"){
+            document.getElementById('reachLable').innerHTML = "verbeter punten voor hoe veel dagen terug: "
+        }
+    }
+</script>

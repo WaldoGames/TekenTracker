@@ -47,11 +47,14 @@ namespace View.Controllers
             {
                 //return error
             }
+            ImprovementViewModel improvementViewModel = new ImprovementViewModel();
+            improvementViewModel.Returned = tags.Data;
+            improvementViewModel.SearchLimits = Standard;
 
-
-            return View();
+            return View(improvementViewModel);
         }
-
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         // POST: ImprovementController/Create
         public ActionResult Index(ImprovementViewModel improvementViewModel)
         {
@@ -59,6 +62,17 @@ namespace View.Controllers
             {
                 return LoginView;
             }
+
+            sessionController.GetUserFromSession(out UserDto user);
+            //user.userId
+
+            Result<List<TagAndAmount>> tags = tagService.GetTagsForImprovementWindow(improvementViewModel.SearchLimits, user.userId);
+
+            if (tags.IsFailed)
+            {
+                //return error
+            }
+            improvementViewModel.Returned = tags.Data;
 
             return View(improvementViewModel);
         }
