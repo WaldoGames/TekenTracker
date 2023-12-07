@@ -1,5 +1,6 @@
 ﻿using Core.Classes.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
 namespace View.Models

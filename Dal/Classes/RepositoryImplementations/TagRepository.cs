@@ -3,12 +3,16 @@ using Core.Classes.DTO;
 using Core.Classes.Enums;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
+using Google.Protobuf.Collections;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Asn1.X509;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -239,31 +243,139 @@ namespace Dal.Classes.RepositoryImplementations
             }
             catch (Exception e)
             {
-                return new Result<List<Tag>> { ErrorMessage = "TagRepository->TryRemoveTagFromPost: " + e.Message };
+                return new SimpleResult { ErrorMessage = "TagRepository->TryRemoveTagFromPost: " + e.Message };
+            }
+        }
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfPost(int Reach, int UserId)
+        {
+            List<TagAndAmount> TagsAndAmount = new List<TagAndAmount>();
+
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+
+                    cmd.CommandText =   "SELECT" +
+                                        "COUNT(`tag`.`tag_id`) as `count`," +
+                                        "`tag`.`tag_id` as `tagId`,`tag`.`title` as `title`, " +
+                                        "`tag`.`type` as `type` FROM((SELECT `post_id` FROM `posts` WHERE `user_id` = @userid" +
+                                        "ORDER BY `post_date` DESC" +
+                                        "LIMIT @limit) AS `recent_posts`" +
+                                        "INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`)" +
+                                        "INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`" +
+                                        "WHERE `tag`.`type` = 2" +
+                                        "GROUP BY `tag`.`tag_id` ORDER BY COUNT(`tag`.`tag_id`) DESC;";
+                    cmd.Parameters.AddWithValue("@userid", UserId); 
+                    cmd.Parameters.AddWithValue("@limit", Reach);
+                    cmd.CommandType = CommandType.Text;
+
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        //TagAndAmount
+                        var tag = new Tag();
+                        tag.name = Convert.ToString(rdr["title"]);
+                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        int tmp = Convert.ToInt32(rdr["type"]);
+                        tag.type = (TagTypes)tmp;
+
+                        TagAndAmount tagAndAmount = new TagAndAmount();
+                        tagAndAmount.tag = tag;
+                        tagAndAmount.count = Convert.ToInt32(rdr["count"]);
+
+                        TagsAndAmount.Add(tagAndAmount);
+                    }
+
+                    con.Close();
+                    return new Result<List<TagAndAmount>> { Data = TagsAndAmount };
+                }
+            }
+            catch (Exception e)
+            {
+                return new Result<List<TagAndAmount>> { ErrorMessage = "TagRepository->GetSearchTagsInLastNumberOfPost: " + e.Message };
             }
         }
 
-        public Result<tag>
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfDays(int Reach, int UserId)
+        {
+            List<TagAndAmount> TagsAndAmount = new List<TagAndAmount>();
 
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+
+                    cmd.CommandText =   "SELECT"+
+                                        "COUNT(`tag`.`tag_id`) as `count`,"+
+                                            "`tag`.`tag_id` as `tagId`," +
+                                            "`tag`.`title` as `title`," +
+                                            "`tag`.`type` as `type`" +
+                                        "FROM((SELECT `post_id`" +
+                                                 "FROM `posts`" +
+                                                 "WHERE `user_id` = @userid" +
+                                                    "AND `post_date` >= DATE_SUB(NOW(), INTERVAL @limit DAY)" +
+                                                 "ORDER BY `post_date` DESC) AS `recent_posts`" +
+                                                "INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`)" +
+                                            "INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`" +
+                                        "WHERE `tag`.`type` = 2" +
+                                        "GROUP BY `tag`.`tag_id`" +
+                                        "ORDER BY COUNT(`tag`.`tag_id`) DESC; ";
+                    cmd.Parameters.AddWithValue("@userid", UserId);
+                    cmd.Parameters.AddWithValue("@limit", Reach);
+                    cmd.CommandType = CommandType.Text;
+
+                    MySqlDataReader rdr = cmd.ExecuteReader();
+                    while (rdr.Read())
+                    {
+                        //TagAndAmount
+                        var tag = new Tag();
+                        tag.name = Convert.ToString(rdr["title"]);
+                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        int tmp = Convert.ToInt32(rdr["type"]);
+                        tag.type = (TagTypes)tmp;
+
+                        TagAndAmount tagAndAmount = new TagAndAmount();
+                        tagAndAmount.tag = tag;
+                        tagAndAmount.count = Convert.ToInt32(rdr["count"]);
+
+                        TagsAndAmount.Add(tagAndAmount);
+                    }
+
+                    con.Close();
+                    return new Result<List<TagAndAmount>> { Data = TagsAndAmount };
+                }
+            }
+            catch (Exception e)
+            {
+                return new Result<List<TagAndAmount>> { ErrorMessage = "TagRepository->GetSearchTagsInLastNumberOfPost: " + e.Message };
+            }
+        }
         /*SELECT
-    COUNT(`tag`.`tag_id`) as `count`,
-    `tag`.`tag_id` as `tagId`,
-    `tag`.`title` as `title`,
-    `tag`.`type` as `type`
-FROM
-    (
-        (SELECT `post_id`
-         FROM `posts`
-         WHERE `user_id` = 10
-         ORDER BY `post_date` DESC
-         LIMIT 2) AS `recent_posts`
-        INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`
-    )
-    INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`
-GROUP BY
-    `tag`.`tag_id`
-ORDER BY
-    COUNT(`tag`.`tag_id`) DESC; -- Optional: You can change the ORDER BY clause based on your requirements
+                COUNT(`tag`.`tag_id`) as `count`,
+                `tag`.`tag_id` as `tagId`,
+                `tag`.`title` as `title`,
+                `tag`.`type` as `type`
+            FROM
+                (
+                    (SELECT `post_id`
+                     FROM `posts`
+                     WHERE `user_id` = @userid
+                     ORDER BY `post_date` DESC
+                     LIMIT @limit) AS `recent_posts`
+                    INNER JOIN `posttag` ON `posttag`.`post_id` = `recent_posts`.`post_id`
+                )
+                INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`
+            WHERE
+                `tag`.`type` = 2
+            GROUP BY
+                `tag`.`tag_id`
+            ORDER BY
+                COUNT(`tag`.`tag_id`) DESC;
+
 */
 
         //SELECT COUNT(`tag`.`tag_id`) as `count`, `tag`.`tag_id` as `tagId`, `tag`.`title` as `title`, `tag`.`type` as `type` FROM ((`posts` INNER JOIN `posttag` ON `posttag`.`post_id` = `posts`.`post_id`) INNER JOIN `tag` ON `posttag`.`tag_id` = `tag`.`tag_id`) WHERE `posts`.`user_id`=10 GROUP BY `tag`.`tag_id`

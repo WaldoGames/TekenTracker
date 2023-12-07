@@ -24,6 +24,11 @@ namespace View.Controllers
 
         public ActionResult Create(int id)
         {
+            if (!CheckLogin(out ActionResult LoginView))
+            {
+                return LoginView;
+            }
+
             NewTagViewModel vm = new NewTagViewModel();
           
             vm.TagsList = new List<TagTypes>

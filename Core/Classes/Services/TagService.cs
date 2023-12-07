@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Core.Classes.DTO;
 using Core.Classes.Models;
 using Core.Interfaces.Repository;
 
@@ -91,6 +92,18 @@ namespace Core.Classes.Services
 
 
             return TagRepository.AddNewTagToDB(tagName, tagType);
+        }
+
+        public Result<List<TagAndAmount>> GetTagsForImprovementWindow(ImprovementSearchLimit searchLimit, int userId)
+        {
+            if(searchLimit.timeOrAmount == TimeOrAmount.time)
+            {
+                return TagRepository.GetSearchTagsInLastNumberOfDays(searchLimit.Reach, userId);
+            }
+            else
+            {
+                return TagRepository.GetSearchTagsInLastNumberOfPost(searchLimit.Reach, userId);
+            }
         }
     }
 }

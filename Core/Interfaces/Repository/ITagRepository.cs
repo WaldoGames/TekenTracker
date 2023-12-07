@@ -23,5 +23,8 @@ namespace Core.Interfaces.Repository
         public SimpleResult AddTagToPost(int postId, int tagId);
         public SimpleResult RemoveTagFromPost(int postId, int tagId);
 
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfPost(int Reach, int UserId);
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfDays(int Reach, int UserId);
+
     }
 }
