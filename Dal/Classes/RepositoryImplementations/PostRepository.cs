@@ -246,9 +246,28 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
     
-        public SimpleResult RemovePostToDB(int PostId)
-    {
-        throw new NotImplementedException();
-    }
+        public SimpleResult RemovePostToDB(int postId)
+        {
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+                    cmd.CommandText = "DELETE FROM posts WHERE(post_id = @postId)";
+                    cmd.Parameters.AddWithValue("@postId", postId);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandType = CommandType.Text;
+
+                    con.Close();
+                    return new SimpleResult();
+                }
+            }
+            catch (Exception e)
+            {
+                return new SimpleResult { ErrorMessage = "PostRepository->RemovePostToDB: " + e.Message };
+            }
+        }
     }
 }

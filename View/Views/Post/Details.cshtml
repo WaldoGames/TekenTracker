@@ -72,6 +72,7 @@
     </dl>
 </div>
 <div>
+    <a onclick="RemovePost()"> Remove </a>
     @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.postId  }) |
     @Html.ActionLink("Add new note", "Create", "Note", new { id = Model.postId }) |
     @Html.ActionLink("Add new image to gallery", "AddSubImage", "Post", new { id = Model.postId }) |
@@ -183,6 +184,16 @@
     function closePopup() {
         var modal = document.getElementById("imageModal");
         modal.style.display = "none";
+    }
+
+    function RemovePost(){
+        if (confirm('Verwijder Post?')) {
+            var id = @Model.postId
+
+                window.location.href = '@Url.Action("Delete", "Post")/' + id;
+        } else {
+
+        }
     }
 
 

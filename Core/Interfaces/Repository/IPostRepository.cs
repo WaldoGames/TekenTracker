@@ -13,10 +13,10 @@ namespace Core.Interfaces.Repository
     {
         public Result<bool> doesPostExist(int postId);
         public Result<int> AddNewPostToDB(NewPostDto post);
-        public SimpleResult RemovePostToDB(int PostId);
+        public SimpleResult RemovePostToDB(int postId);
 
-        public Result<Post> GetDetailedPost(int PostId);
+        public Result<Post> GetDetailedPost(int postId);
         public Result<OverviewManyPostsDto> GetOverviewPost(GetOverviewMantPostsDto getPostsDto);
-        public SimpleResult ChangeMainImageInDB(int PostId ,string NewUrl);
+        public SimpleResult ChangeMainImageInDB(int postId ,string newUrl);
     }
 }

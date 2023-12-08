@@ -195,7 +195,9 @@ namespace View.Controllers
         // GET: PostController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            postService.DeletePost(id);
+
+            return RedirectToAction("Index", "Post", new { });
         }
 
         // POST: PostController/Delete/5
