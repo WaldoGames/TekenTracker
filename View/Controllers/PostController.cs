@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using NuGet.Protocol;
+using System.IO.Compression;
 using View.Models;
 
 namespace View.Controllers
@@ -22,12 +23,14 @@ namespace View.Controllers
         TagService tagService;
         SessionController sessionController;
         IWebHostEnvironment webHost;
+        FileChecker fileChecker;
         public PostController(IMemoryCache cache, IWebHostEnvironment webHost) : base(cache)
         {
             postService = new PostService(new PostRepository(),new NoteRepository(), new SubimageRepository(),new TagRepository());
             tagService = new TagService(new TagRepository());
             sessionController = new SessionController(cache);
             this.webHost = webHost;
+            fileChecker = new FileChecker();
         }
 
 
@@ -96,6 +99,14 @@ namespace View.Controllers
         public ActionResult Create(NewPostViewModel newPost)
         {
             //create the post (make sure to return the id)
+
+            FileUploadPreCheckValue FileTest = fileChecker.TestFile(newPost.image);
+
+            if(FileTest != FileUploadPreCheckValue.Accepted)
+            {
+                return View("error");
+            }
+
             NewPostDto dto = new NewPostDto();
             if (sessionController.GetUserFromSession(out UserDto? user)) {
                 dto.Poster = user.userId;
@@ -210,6 +221,14 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ChangeMainImage(int id, NewMainImageModel model)
         {
+            FileUploadPreCheckValue FileTest = fileChecker.TestFile(model.Image);
+
+            if (FileTest != FileUploadPreCheckValue.Accepted)
+            {
+                return View("error");
+            }
+
+
             string path = UploadImage(model.Image);
 
             SimpleResult result = postService.ChangeMainImageOfPost(id, path, model.MoveOldImageToSubimage);
@@ -260,6 +279,8 @@ namespace View.Controllers
         {
             string fileName = null;
 
+
+
             if (image != null)
             {
 
@@ -275,6 +296,7 @@ namespace View.Controllers
             return fileName;
         }
 
-
+        
     }
+
 }
