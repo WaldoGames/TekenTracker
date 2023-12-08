@@ -122,10 +122,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
                         var tag = new Tag();
-                        tag.name = Convert.ToString(rdr["title"]);
-                        tag.tagId = Convert.ToInt32(rdr["tag_id"]);
+                        tag.Name = Convert.ToString(rdr["title"]);
+                        tag.TagId = Convert.ToInt32(rdr["tag_id"]);
                         int tmp = Convert.ToInt32(rdr["type"]);
-                        tag.type = (TagTypes)tmp;
+                        tag.Type = (TagTypes)tmp;
                         tags.Add(tag);
                     }
                     con.Close();
@@ -164,10 +164,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
                         var tag = new Tag();
-                        tag.name = Convert.ToString(rdr["title"]);
-                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        tag.Name = Convert.ToString(rdr["title"]);
+                        tag.TagId = Convert.ToInt32(rdr["tagId"]);
                         int tmp = Convert.ToInt32(rdr["type"]);
-                        tag.type = (TagTypes)tmp;
+                        tag.Type = (TagTypes)tmp;
                         tags.Add(tag);
                     }
 
@@ -200,10 +200,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
                         var tag = new Tag();
-                        tag.name = Convert.ToString(rdr["title"]);
-                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        tag.Name = Convert.ToString(rdr["title"]);
+                        tag.TagId = Convert.ToInt32(rdr["tagId"]);
                         int tmp = Convert.ToInt32(rdr["type"]);
-                        tag.type = (TagTypes)tmp;
+                        tag.Type = (TagTypes)tmp;
                         tags.Add(tag);
                     }
 
@@ -276,14 +276,14 @@ namespace Dal.Classes.RepositoryImplementations
                     {
                         //TagAndAmount
                         var tag = new Tag();
-                        tag.name = Convert.ToString(rdr["title"]);
-                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        tag.Name = Convert.ToString(rdr["title"]);
+                        tag.TagId = Convert.ToInt32(rdr["tagId"]);
                         int tmp = Convert.ToInt32(rdr["type"]);
-                        tag.type = (TagTypes)tmp;
+                        tag.Type = (TagTypes)tmp;
 
                         TagAndAmount tagAndAmount = new TagAndAmount();
-                        tagAndAmount.tag = tag;
-                        tagAndAmount.count = Convert.ToInt32(rdr["count"]);
+                        tagAndAmount.Tag = tag;
+                        tagAndAmount.Count = Convert.ToInt32(rdr["count"]);
 
                         TagsAndAmount.Add(tagAndAmount);
                     }
@@ -333,14 +333,14 @@ namespace Dal.Classes.RepositoryImplementations
                     {
                         //TagAndAmount
                         var tag = new Tag();
-                        tag.name = Convert.ToString(rdr["title"]);
-                        tag.tagId = Convert.ToInt32(rdr["tagId"]);
+                        tag.Name = Convert.ToString(rdr["title"]);
+                        tag.TagId = Convert.ToInt32(rdr["tagId"]);
                         int tmp = Convert.ToInt32(rdr["type"]);
-                        tag.type = (TagTypes)tmp;
+                        tag.Type = (TagTypes)tmp;
 
                         TagAndAmount tagAndAmount = new TagAndAmount();
-                        tagAndAmount.tag = tag;
-                        tagAndAmount.count = Convert.ToInt32(rdr["count"]);
+                        tagAndAmount.Tag = tag;
+                        tagAndAmount.Count = Convert.ToInt32(rdr["count"]);
 
                         TagsAndAmount.Add(tagAndAmount);
                     }

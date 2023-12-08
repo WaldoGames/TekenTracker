@@ -33,7 +33,7 @@
     <div class="grid-container">
          @foreach (var tag in Model.Returned as List<Core.Classes.DTO.TagAndAmount>)
                 {
-                     <div class="grid-item"> <div class="left">@tag.count -  @tag.tag.name</div></div>
+                     <div class="grid-item"> <div class="left">@tag.Count -  @tag.Tag.Name</div></div>
                     
 
                     
@@ -48,12 +48,12 @@
         @foreach (TimeOrAmount tag in Model.TimeOrAmountEnum)
         {
             @tag.ToString()
-            @Html.RadioButtonFor(m => m.SearchLimits.timeOrAmount, tag.ToString(),new { @class = "item-radio", data_name = tag.ToString()})
+            @Html.RadioButtonFor(m => m.SearchLimits.TimeOrAmount, tag.ToString(),new { @class = "item-radio", data_name = tag.ToString()})
             <br />
         }
 
         <div class="form-group">
-            @if(Model.SearchLimits.timeOrAmount == TimeOrAmount.time)
+            @if(Model.SearchLimits.TimeOrAmount == TimeOrAmount.time)
             {
                 <p id="reachLable">verbeter punten voor hoe veel dagen terug: </p>
             }

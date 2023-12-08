@@ -95,9 +95,9 @@ namespace Dal.Classes.RepositoryImplementations
 
 
                         Note note = new Note();
-                        note.text = Convert.ToString(rdr["text"]);
-                        note.uploadDate = Convert.ToDateTime(rdr["upload_date"]);
-                        note.noteId = Convert.ToInt32(rdr["note_id"]);
+                        note.Text = Convert.ToString(rdr["text"]);
+                        note.UploadDate = Convert.ToDateTime(rdr["upload_date"]);
+                        note.NoteId = Convert.ToInt32(rdr["note_id"]);
                         notes.Notes.Add(note);
 
                     }
@@ -157,10 +157,10 @@ namespace Dal.Classes.RepositoryImplementations
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        note.text = Convert.ToString(rdr["text"]);
-                        note.uploadDate = Convert.ToDateTime(rdr["upload_date"]);
-                        note.noteId = Convert.ToInt32(rdr["note_id"]);
-                        note.postId = Convert.ToInt32(rdr["post_id"]);
+                        note.Text = Convert.ToString(rdr["text"]);
+                        note.UploadDate = Convert.ToDateTime(rdr["upload_date"]);
+                        note.NoteId = Convert.ToInt32(rdr["note_id"]);
+                        note.PostId = Convert.ToInt32(rdr["post_id"]);
 
                     }
 

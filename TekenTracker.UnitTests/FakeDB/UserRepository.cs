@@ -18,7 +18,7 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public Result<bool> DoesUserExistInDB(string UserName)
         {
-            if (container.users.Select(u => u.userName).Contains(UserName))
+            if (container.users.Select(u => u.UserName).Contains(UserName))
             {
                 return new Result<bool> { Data = true };
             }
@@ -30,7 +30,7 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public Result<bool> IsTokenValid(string Username, string Token)
         {
-            User user = container.users.Where(u => u.userName == Username).First();
+            User user = container.users.Where(u => u.UserName == Username).First();
 
             if (user.Token == Token && user.TokenValidUntil > DateTime.Now)
             {
@@ -47,7 +47,7 @@ namespace TekenTracker.UnitTests.FakeDB
                 AccountToken.Token = ("token-"+UserId);
                 AccountToken.ValidUntil = DateTime.Now.AddSeconds(60);
 
-                User user = container.users.Where(u => u.userId==UserId).First();
+                User user = container.users.Where(u => u.UserId==UserId).First();
                 user.Token = AccountToken.Token;
                 user.TokenValidUntil = AccountToken.ValidUntil;
             return new Result<CheckAccountTokenDTO> { Data = AccountToken };
@@ -56,7 +56,7 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public void testMoveTokenValidTimeToPast(int UserId)
         {
-            User user = container.users.Where(u => u.userId == UserId).First();
+            User user = container.users.Where(u => u.UserId == UserId).First();
 
             user.TokenValidUntil = DateTime.Now.AddSeconds(-600);
         }
@@ -66,10 +66,10 @@ namespace TekenTracker.UnitTests.FakeDB
             User user = new User();
             Encryption encryption = new Encryption();
 
-            user.userId = container.users.Select(u => u.userId).Max()+1;
-            user.userName = newUser.userName;
-            user.password = encryption.EncryptNewString(newUser.password);
-            user.email = newUser.email;
+            user.UserId = container.users.Select(u => u.UserId).Max()+1;
+            user.UserName = newUser.UserName;
+            user.Password = encryption.EncryptNewString(newUser.Password);
+            user.Email = newUser.Email;
 
             container.users.Add(user);
 
@@ -79,9 +79,9 @@ namespace TekenTracker.UnitTests.FakeDB
         public Result<User> GetUser(string Username)
         {
             User user;
-            if (container.users.Select(u => u.userName).Contains(Username))
+            if (container.users.Select(u => u.UserName).Contains(Username))
             {
-                user = container.users.Where(u => u.userName == Username).First();
+                user = container.users.Where(u => u.UserName == Username).First();
                 return new Result<User> { Data = user };
             }
             else
@@ -93,9 +93,9 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public SimpleResult RemoveUserFromDB(int UserId)
         {
-            container.users.Remove(container.users.Where(u=>u.userId == UserId).First());
+            container.users.Remove(container.users.Where(u=>u.UserId == UserId).First());
 
-            if(!container.users.Select(u => u.userId).Contains(UserId))
+            if(!container.users.Select(u => u.UserId).Contains(UserId))
             {
 
                 return new SimpleResult();

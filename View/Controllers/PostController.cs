@@ -48,11 +48,12 @@ namespace View.Controllers
             }
             
             sessionController.GetUserFromSession(out UserDto user);
-            mainPageViewModel.userId = user.userId;
+            mainPageViewModel.userId = user.UserId;
 
             GetOverviewMantPostsDto getOverviewMantPostsDto = new GetOverviewMantPostsDto();
             getOverviewMantPostsDto.Tags = mainPageViewModel.usedTags;
-            getOverviewMantPostsDto.userId = user.userId;
+            getOverviewMantPostsDto.UserId = user.UserId;
+            getOverviewMantPostsDto.IsOneTagEnough = mainPageViewModel.IsOneTagEnough;
 
             Result <OverviewManyPostsDto> posts = postService.GetMainPagePosts(getOverviewMantPostsDto);
 
@@ -62,14 +63,14 @@ namespace View.Controllers
             }
 
             mainPageViewModel.posts = posts.Data.Posts;
-            Result<List<Tag>> c = tagService.GetSearchTagsFromUser(user.userId);
+            Result<List<Tag>> c = tagService.GetSearchTagsFromUser(user.UserId);
 
             if (c.IsFailed)
             {
                 return View("error");
             }
 
-            ViewBag.Tags = c.Data.Where(t=>t.type == Core.Classes.Enums.TagTypes.Search).ToList();
+            ViewBag.Tags = c.Data.Where(t=>t.Type == Core.Classes.Enums.TagTypes.Search).ToList();
 
             return View(mainPageViewModel);
         }
@@ -109,7 +110,7 @@ namespace View.Controllers
 
             NewPostDto dto = new NewPostDto();
             if (sessionController.GetUserFromSession(out UserDto? user)) {
-                dto.Poster = user.userId;
+                dto.Poster = user.UserId;
                 dto.Notes = newPost.Note;
                 dto.Title = newPost.Title;
                 dto.ImageUrl = UploadImage(newPost.image);
@@ -143,8 +144,8 @@ namespace View.Controllers
                 return View("error");
             }
 
-            ViewBag.Tags = Alltags.Data.Where(e=>e.type == Core.Classes.Enums.TagTypes.Search).ToList();
-            ViewBag.ImprovementTags = Alltags.Data.Where(e => e.type == Core.Classes.Enums.TagTypes.Improvement).ToList();
+            ViewBag.Tags = Alltags.Data.Where(e=>e.Type == Core.Classes.Enums.TagTypes.Search).ToList();
+            ViewBag.ImprovementTags = Alltags.Data.Where(e => e.Type == Core.Classes.Enums.TagTypes.Improvement).ToList();
  
             Result<List<Tag>> tags = postService.GetTagsFromPost(id);
 
@@ -155,7 +156,7 @@ namespace View.Controllers
 
             tm.Tags = tags.Data;
 
-            tm.TagIds = tm.Tags.Select(t => t.tagId).ToList();
+            tm.TagIds = tm.Tags.Select(t => t.TagId).ToList();
 
             return View(tm);
         }
@@ -254,7 +255,7 @@ namespace View.Controllers
         {
             List<NewSubimageDto> images = UploadManyImages(model.subimages);
 
-            images.ForEach(i => i.postId = id);
+            images.ForEach(i => i.PostId = id);
 
             SimpleResult result = postService.AddManySubimageToExistingPost(id ,images);
 
@@ -271,7 +272,7 @@ namespace View.Controllers
             foreach (IFormFile item in images)
             {
                 NewSubimageDto subimage = new NewSubimageDto();
-                subimage.imageUrl = UploadImage(item);
+                subimage.ImageUrl = UploadImage(item);
                 newimages.Add(subimage);
             }
             return newimages;

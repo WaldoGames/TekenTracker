@@ -18,7 +18,7 @@ namespace View.Controllers
 
         ImprovementSearchLimit Standard = new ImprovementSearchLimit
         {
-            timeOrAmount = TimeOrAmount.time,
+            TimeOrAmount = TimeOrAmount.time,
             Reach = 365 //1 year default i guess
         };
         public ImprovementController(IMemoryCache cache, IWebHostEnvironment webHost) : base(cache)
@@ -41,7 +41,7 @@ namespace View.Controllers
             sessionController.GetUserFromSession(out UserDto user);
             //user.userId
 
-            Result<List<TagAndAmount>> tags = tagService.GetTagsForImprovementWindow(Standard, user.userId);
+            Result<List<TagAndAmount>> tags = tagService.GetTagsForImprovementWindow(Standard, user.UserId);
 
             if (tags.IsFailed)
             {
@@ -66,7 +66,7 @@ namespace View.Controllers
             sessionController.GetUserFromSession(out UserDto user);
             //user.userId
 
-            Result<List<TagAndAmount>> tags = tagService.GetTagsForImprovementWindow(improvementViewModel.SearchLimits, user.userId);
+            Result<List<TagAndAmount>> tags = tagService.GetTagsForImprovementWindow(improvementViewModel.SearchLimits, user.UserId);
 
             if (tags.IsFailed)
             {

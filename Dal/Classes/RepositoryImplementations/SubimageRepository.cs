@@ -51,7 +51,7 @@ namespace Dal.Classes.RepositoryImplementations
         public Result<SubimagesDto> GetSubimagesFromPost(int PostId)
         {
             SubimagesDto subimages = new SubimagesDto();
-            subimages.images = new List<SubImage>();
+            subimages.Images = new List<SubImage>();
             
             using (MySqlConnection con = new MySqlConnection(CS))
             {
@@ -70,15 +70,15 @@ namespace Dal.Classes.RepositoryImplementations
                     if (subimages == null)
                     {
                         subimages = new SubimagesDto();
-                        subimages.images = new List<SubImage>();
+                        subimages.Images = new List<SubImage>();
                     }
 
 
                     SubImage image = new SubImage();
-                    image.imageUrl = Convert.ToString(rdr["image_url"]);
-                    image.uploadDate = Convert.ToDateTime(rdr["upload_date"]);
-                    image.subimageId = Convert.ToInt32(rdr["subimage_id"]);
-                    subimages.images.Add(image);
+                    image.ImageUrl = Convert.ToString(rdr["image_url"]);
+                    image.UploadDate = Convert.ToDateTime(rdr["upload_date"]);
+                    image.SubimageId = Convert.ToInt32(rdr["subimage_id"]);
+                    subimages.Images.Add(image);
                     //con.Close();
 
                 }

@@ -12,6 +12,6 @@ namespace Core.Classes.DTO
         public int Post_id {  get; set; }
         public string Title { get; set; }
         public string MainImageUrl { get; set; }
-        public DateTime dateTime { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }

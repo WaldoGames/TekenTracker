@@ -9,6 +9,8 @@ namespace View.Models
         
         public List<int> usedTags { get; set; }
 
+        public bool IsOneTagEnough { get; set; }
+
         public int userId { get; set; }
     }
 }

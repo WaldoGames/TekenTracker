@@ -8,7 +8,7 @@ namespace Core.Classes.DTO
 {
     public class NewSubimageDto
     {
-        public string imageUrl { get; set; }
-        public int postId { get; set; }
+        public string ImageUrl { get; set; }
+        public int PostId { get; set; }
     }
 }

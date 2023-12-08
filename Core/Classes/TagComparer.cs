@@ -11,12 +11,12 @@ namespace Core.Classes
     {
         public bool Equals(Tag x, Tag y)
         {
-            return x.tagId == y.tagId;
+            return x.TagId == y.TagId;
         }
 
         public int GetHashCode(Tag obj)
         {
-            return obj.tagId.GetHashCode();
+            return obj.TagId.GetHashCode();
         }
     }
 }

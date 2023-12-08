@@ -21,7 +21,7 @@ namespace Core.Classes.Services
         }
         public Result<bool> ChecKLoginStatus(UserDto user)
         {
-            return repository.IsTokenValid(user.userName, user.Token);
+            return repository.IsTokenValid(user.UserName, user.Token);
         }
         public Result<LoginDto> TryLogin(string username, string password)
         {
@@ -52,11 +52,11 @@ namespace Core.Classes.Services
                 return new Result<LoginDto> { ErrorMessage = "UserService->Trylogin: User could not be found after inital user check" };
             }
 
-            if (!encryption.CompareEncryptedString(password, user.Data.password))
+            if (!encryption.CompareEncryptedString(password, user.Data.Password))
             {
                 return new Result<LoginDto> { Data = new LoginDto { IsLoggedIn = false } };
             }
-            Result<CheckAccountTokenDTO> tokendto= repository.AddNewAccountTokenToDB(user.Data.userId);
+            Result<CheckAccountTokenDTO> tokendto= repository.AddNewAccountTokenToDB(user.Data.UserId);
 
             if (tokendto.IsFailed){
                 return new Result<LoginDto> { ErrorMessage = "UserService->Trylogin: error passed form UserRepository->AddNewAccountTokenToDB" };
@@ -69,10 +69,10 @@ namespace Core.Classes.Services
             loginDto = new LoginDto();
 
             UserDto userDto = new UserDto();
-            userDto.email = user.Data.email;
+            userDto.Email = user.Data.Email;
             userDto.Token = tokendto.Data.Token;
-            userDto.userName = user.Data.userName;
-            userDto.userId = user.Data.userId;
+            userDto.UserName = user.Data.UserName;
+            userDto.UserId = user.Data.UserId;
 
             return new Result<LoginDto> { Data = new LoginDto { IsLoggedIn = true, User = userDto } };
 
@@ -81,13 +81,13 @@ namespace Core.Classes.Services
         {
             UserCreationEnum userCreationEnum = new UserCreationEnum();
 
-            if(string.IsNullOrEmpty(newUser.email) || string.IsNullOrEmpty(newUser.password) || string.IsNullOrEmpty(newUser.userName))
+            if(string.IsNullOrEmpty(newUser.Email) || string.IsNullOrEmpty(newUser.Password) || string.IsNullOrEmpty(newUser.UserName))
             {
                 userCreationEnum = UserCreationEnum.failed;
                 return userCreationEnum;
             }
 
-            Result<bool> doesUserExist = repository.DoesUserExistInDB(newUser.userName);
+            Result<bool> doesUserExist = repository.DoesUserExistInDB(newUser.UserName);
 
             if (doesUserExist.IsFailed)
             {

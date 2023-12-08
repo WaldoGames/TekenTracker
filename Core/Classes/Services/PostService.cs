@@ -48,7 +48,7 @@ namespace Core.Classes.Services
             }
             foreach (var post in posts.Data.Posts)
             {
-                Result<List<Tag>> tags = TagRepository.GetTagsFromPost(post.postId);
+                Result<List<Tag>> tags = TagRepository.GetTagsFromPost(post.PostId);
 
                 if (tags.IsFailed)
                 {
@@ -80,7 +80,7 @@ namespace Core.Classes.Services
             {
                 return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get notes" };
             }
-            post.Data.notes = notes.Data.Notes;
+            post.Data.Notes = notes.Data.Notes;
 
             Result<SubimagesDto> subimages = SubImageRepository.GetSubimagesFromPost(postId);
 
@@ -88,7 +88,7 @@ namespace Core.Classes.Services
             {
                 return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get Subimages" };
             }
-            post.Data.subImages = subimages.Data.images;
+            post.Data.SubImages = subimages.Data.Images;
 
             Result<List<Tag>> tags = TagRepository.GetTagsFromPost(postId);
 
@@ -96,7 +96,7 @@ namespace Core.Classes.Services
             {
                 return new Result<Post> { ErrorMessage = "PostService->TryGetDetailedPost Failed to get tags" };
             }
-            post.Data.tags = tags.Data;
+            post.Data.Tags = tags.Data;
 
             return post;
         }
@@ -179,7 +179,7 @@ namespace Core.Classes.Services
             {
                 return new SimpleResult { ErrorMessage = "PostService->CopyMainImageToGallery failed to get post" };
             }
-            NewSubimageDto newSubimage = new NewSubimageDto { imageUrl = post.Data.mainImageUrl, postId = postId };
+            NewSubimageDto newSubimage = new NewSubimageDto { ImageUrl = post.Data.MainImageUrl, PostId = postId };
 
             return SubimageService.AddNewSubimage(newSubimage);
         }

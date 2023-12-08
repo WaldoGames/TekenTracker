@@ -10,9 +10,10 @@ namespace Core.Classes.DTO
     public class GetOverviewMantPostsDto
     {
         public List<int>? Tags;
+        public bool IsOneTagEnough = false;
 
-        public int userId { get; set; }
-        public int count { get; set; } = 0;
-        public int offset { get; set; } = 0;
+        public int UserId { get; set; }
+        public int Count { get; set; } = 0;
+        public int Offset { get; set; } = 0;
     }
 }

@@ -8,9 +8,9 @@ namespace Core.Classes.Models
 {
     public class SubImage
     {
-        public int? subimageId { get; set; }
-        public string imageUrl { get; set; }
-        public DateTime uploadDate { get; set; }
-        public int postId { get; set; }
+        public int? SubimageId { get; set; }
+        public string ImageUrl { get; set; }
+        public DateTime UploadDate { get; set; }
+        public int PostId { get; set; }
     }
 }

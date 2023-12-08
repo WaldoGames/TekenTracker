@@ -18,9 +18,9 @@ namespace Core.Classes.Services
             TagRepository = tagRepository;
         }
 
-        public SimpleResult UpdateTagsFromPost(int PostId, List<int> tagIds)
+        public SimpleResult UpdateTagsFromPost(int postId, List<int> tagIds)
         {
-            Result<List<Tag>> currentPostTags = TagRepository.GetTagsFromPost(PostId);
+            Result<List<Tag>> currentPostTags = TagRepository.GetTagsFromPost(postId);
 
             if (currentPostTags.IsFailed)
             {
@@ -30,11 +30,11 @@ namespace Core.Classes.Services
             {
                 currentPostTags.Data = new List<Tag>();
             }
-            List<Tag> ToRemove = currentPostTags.Data.Where(e => !tagIds.Contains(e.tagId)).ToList();
-            List<int> ToAdd = tagIds.Where(e => !currentPostTags.Data.Select(e => e.tagId).Contains(e)).ToList();
+            List<Tag> ToRemove = currentPostTags.Data.Where(e => !tagIds.Contains(e.TagId)).ToList();
+            List<int> ToAdd = tagIds.Where(e => !currentPostTags.Data.Select(e => e.TagId).Contains(e)).ToList();
 
-            RemoveTagsFromPost(PostId, ToRemove.Select(e => e.tagId).ToList());
-            AddTagsToPost(PostId, ToAdd);
+            RemoveTagsFromPost(postId, ToRemove.Select(e => e.TagId).ToList());
+            AddTagsToPost(postId, ToAdd);
 
             return new SimpleResult();
 
@@ -51,7 +51,7 @@ namespace Core.Classes.Services
             {
                 tags.Data = new List<Tag>();
             }
-            tags.Data = tags.Data.Where(t => t.type == Enums.TagTypes.Search).OrderBy(t => t.name).ToList();
+            tags.Data = tags.Data.Where(t => t.Type == Enums.TagTypes.Search).OrderBy(t => t.Name).ToList();
             return new Result<List<Tag>> { Data = tags.Data };
 
         }
@@ -96,7 +96,7 @@ namespace Core.Classes.Services
 
         public Result<List<TagAndAmount>> GetTagsForImprovementWindow(ImprovementSearchLimit searchLimit, int userId)
         {
-            if(searchLimit.timeOrAmount == TimeOrAmount.time)
+            if(searchLimit.TimeOrAmount == TimeOrAmount.time)
             {
                 return TagRepository.GetSearchTagsInLastNumberOfDays(searchLimit.Reach, userId);
             }

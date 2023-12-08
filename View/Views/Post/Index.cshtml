@@ -12,11 +12,11 @@
 {
 
         <li class="item">
-        @emp.title -- <a asp-controller="Post" asp-action="Details" asp-route-id="@emp.postId">Details</a>
-        @if (emp.mainImageUrl != null && emp.mainImageUrl != "")
+        @emp.Title -- <a asp-controller="Post" asp-action="Details" asp-route-id="@emp.PostId">Details</a>
+        @if (emp.MainImageUrl != null && emp.MainImageUrl != "")
         {
             <br>
-            <img width="100%" src="~/Images/@emp.mainImageUrl" />
+            <img width="100%" src="~/Images/@emp.MainImageUrl" />
         }
     </li>
 
@@ -28,12 +28,22 @@
         <form method="GET">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
+                <div class="form-group">
+                <label>
+
+                    @Html.CheckBoxFor(x => x.IsOneTagEnough) 
+                    een tag per post is genoeg
+                </label>
+                <br />
+
+                </div>
+
                 @foreach (var tag in ViewBag.Tags as List<Core.Classes.Models.Tag>)
                 {
                     <div>
                         <label>
-                        <input type="checkbox" name="usedTags" value="@tag.tagId" />
-                            @tag.name
+                        <input type="checkbox" name="usedTags" value="@tag.TagId" @(Model.usedTags != null && Model.usedTags.Contains(tag.TagId) ? "checked" : "") />
+                            @tag.Name
                         </label>
                     </div>
                 }

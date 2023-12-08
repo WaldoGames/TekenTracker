@@ -17,39 +17,39 @@ namespace TekenTracker.UnitTests.UnitTestsFactory
             {
                 new Tag()
                 {
-                    name = "NULLtag",
-                    tagId = 0,
-                    type = TagTypes.Search
+                    Name = "NULLtag",
+                    TagId = 0,
+                    Type = TagTypes.Search
                 },
                 new Tag()
                 {
-                    name = "FirstTag",
-                    tagId = 1,
-                    type = TagTypes.Search
+                    Name = "FirstTag",
+                    TagId = 1,
+                    Type = TagTypes.Search
                 },
                 new Tag()
                 {
-                    name = "PineApple",
-                    tagId = 2,
-                    type = TagTypes.Search
+                    Name = "PineApple",
+                    TagId = 2,
+                    Type = TagTypes.Search
                 },
                 new Tag()
                 {
-                    name = "Tree",
-                    tagId = 3,
-                    type = TagTypes.Search
+                    Name = "Tree",
+                    TagId = 3,
+                    Type = TagTypes.Search
                 },
                 new Tag()
                 {
-                    name = "No",
-                    tagId = 4,
-                    type = TagTypes.Search
+                    Name = "No",
+                    TagId = 4,
+                    Type = TagTypes.Search
                 },
                 new Tag()
                 {
-                    name = "The sun is a deadly lazer",
-                    tagId = 5,
-                    type = TagTypes.Search
+                    Name = "The sun is a deadly lazer",
+                    TagId = 5,
+                    Type = TagTypes.Search
                 },
 
             };

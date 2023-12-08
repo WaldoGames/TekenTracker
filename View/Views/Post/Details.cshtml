@@ -11,50 +11,50 @@
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.title)
+            @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.title)
+            @Html.DisplayFor(model => model.Title)
         </dd>
         <li>
 
                 <br>
-            <img width="500" src="~/Images/@Model.mainImageUrl" onclick="showPopup('@Model.mainImageUrl', false)" />
+            <img width="500" src="~/Images/@Model.MainImageUrl" onclick="showPopup('@Model.MainImageUrl', false)" />
         </li>
         <dt class = "col-sm-2">
             upload datum:
         </dt>
         <dd class = "col-sm-10">
-            @Model.postDate.Date.ToShortDateString()
+            @Model.PostDate.Date.ToShortDateString()
         </dd>
 
-        @if(Model.subImages != null)
+        @if(Model.SubImages != null)
         {
-            if(Model.subImages.Count > 0){
+            if(Model.SubImages.Count > 0){
             <dt class="col-sm-2">
                 Subimages:
             </dt>
             <div class="image-gallery">
-            @foreach(var subimage in Model.subImages.OrderBy(s=>s.uploadDate).ToList())
+            @foreach(var subimage in Model.SubImages.OrderBy(s=>s.UploadDate).ToList())
             {
-                    <img width="250" src="~/Images/@subimage.imageUrl" onclick="showPopup('@subimage.imageUrl', true)" />
+                    <img width="250" src="~/Images/@subimage.ImageUrl" onclick="showPopup('@subimage.ImageUrl', true)" />
             }
             </div>
             }
         }
 
-        @if(Model.notes != null)
+        @if(Model.Notes != null)
         {
-            if (Model.notes.Count > 0)
+            if (Model.Notes.Count > 0)
             {
                 <dt class="col-sm-2">
                     Notes:
                 </dt>
-                @foreach (var note in Model.notes.OrderBy(n => n.uploadDate).ToList())
+                @foreach (var note in Model.Notes.OrderBy(n => n.UploadDate).ToList())
                 {
-                    <p>@note.text</p>
+                    <p>@note.Text</p>
 
-                    @Html.ActionLink("Edit note", "Edit", "Note", new { id = note.noteId})
+                    @Html.ActionLink("Edit note", "Edit", "Note", new { id = note.NoteId})
                 }
             }
         }
@@ -73,10 +73,10 @@
 </div>
 <div>
     <a onclick="RemovePost()"> Remove </a>
-    @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.postId  }) |
-    @Html.ActionLink("Add new note", "Create", "Note", new { id = Model.postId }) |
-    @Html.ActionLink("Add new image to gallery", "AddSubImage", "Post", new { id = Model.postId }) |
-    @Html.ActionLink("Upload new main image", "ChangeMainImage", "Post", new { id = Model.postId }) |
+    @Html.ActionLink("Edit tags", "EditTagsFromPost", new {  id = Model.PostId  }) |
+    @Html.ActionLink("Add new note", "Create", "Note", new { id = Model.PostId }) |
+    @Html.ActionLink("Add new image to gallery", "AddSubImage", "Post", new { id = Model.PostId }) |
+    @Html.ActionLink("Upload new main image", "ChangeMainImage", "Post", new { id = Model.PostId }) |
     <a asp-action="Index">Back to List</a>
 </div>
 
@@ -142,7 +142,7 @@
 </style>
 <script>
     //Subimage vars
-    var images = @Html.Raw(Json.Serialize(Model.subImages.Select(s=>s.imageUrl).ToList()));
+    var images = @Html.Raw(Json.Serialize(Model.SubImages.Select(s=>s.ImageUrl).ToList()));
     var currentGalleryIndex = 0;
 
     //Subimage funtions
@@ -188,7 +188,7 @@
 
     function RemovePost(){
         if (confirm('Verwijder Post?')) {
-            var id = @Model.postId
+            var id = @Model.PostId
 
                 window.location.href = '@Url.Action("Delete", "Post")/' + id;
         } else {

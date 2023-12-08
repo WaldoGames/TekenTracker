@@ -8,9 +8,9 @@ namespace Core.Classes.Models
 {
     public class Note
     {
-        public int? noteId { get; set; }
-        public string text { get; set; }
-        public DateTime uploadDate { get; set; }
-        public int postId { get; set; }
+        public int? NoteId { get; set; }
+        public string Text { get; set; }
+        public DateTime UploadDate { get; set; }
+        public int PostId { get; set; }
     }
 }

@@ -54,8 +54,8 @@ namespace View.Controllers
             sessionController.GetUserFromSession(out UserDto? userDto);
             if (userDto != null)
             {
-                user.username = userDto.userName;
-                user.email = userDto.email;
+                user.username = userDto.UserName;
+                user.email = userDto.Email;
                 return View(user);
             }
             else
@@ -83,9 +83,9 @@ namespace View.Controllers
 
 
             NewUserDto newUserDto = new NewUserDto();
-            newUserDto.userName = nu.username;
-            newUserDto.email = nu.email;
-            newUserDto.password = nu.password;
+            newUserDto.UserName = nu.username;
+            newUserDto.Email = nu.email;
+            newUserDto.Password = nu.password;
 
             userService.CreateNewUser(newUserDto);
 

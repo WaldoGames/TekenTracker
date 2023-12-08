@@ -25,11 +25,11 @@ namespace TekenTracker.UnitTests.FakeDB
             string OldUrl = "";
             try
             {
-            Post post = container.posts.Where(p => p.postId == PostId).First();
+            Post post = container.posts.Where(p => p.PostId == PostId).First();
 
-            OldUrl = post.mainImageUrl;
+            OldUrl = post.MainImageUrl;
 
-            post.mainImageUrl = NewUrl;
+            post.MainImageUrl = NewUrl;
 
             return new SimpleResult();
             }
@@ -41,19 +41,19 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public Result<bool> doesPostExist(int postId)
         {
-            return new Result<bool> { Data = container.posts.Select(p => p.postId).Contains(postId) };
+            return new Result<bool> { Data = container.posts.Select(p => p.PostId).Contains(postId) };
         }
 
         public Result<int> AddNewPostToDB(NewPostDto post)
         {
             Post newPost = new Post();
 
-            newPost.title = post.Title;
-            newPost.mainImageUrl = post.ImageUrl;
-            newPost.postDate = DateTime.Now;
-            newPost.postId = container.posts.Select(p => p.postId).Max();
+            newPost.Title = post.Title;
+            newPost.MainImageUrl = post.ImageUrl;
+            newPost.PostDate = DateTime.Now;
+            newPost.PostId = container.posts.Select(p => p.PostId).Max();
 
-            int PrimaryKeyValue = newPost.postId;
+            int PrimaryKeyValue = newPost.PostId;
 
             
             return new Result<int> { Data= PrimaryKeyValue};
@@ -63,7 +63,7 @@ namespace TekenTracker.UnitTests.FakeDB
 
         public Result<Post> GetDetailedPost(int PostId)
         {
-            Post post = container.posts.Where(p => p.postId == PostId).First();
+            Post post = container.posts.Where(p => p.PostId == PostId).First();
 
             if(post == null)
             {

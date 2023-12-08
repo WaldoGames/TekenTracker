@@ -9,29 +9,29 @@ namespace Core.Classes.Models
 {
     public class Post
     {
-        public int postId { get; set; }
-        public string title { get; set; }
+        public int PostId { get; set; }
+        public string Title { get; set; }
 
-        public string mainImageUrl { get; set; }
+        public string MainImageUrl { get; set; }
 
-        public DateTime postDate { get; set; }
+        public DateTime PostDate { get; set; }
 
-        public int user_Id { get; set; }
+        public int User_Id { get; set; }
 
-        public List<Note>? notes { get; set; }
-        public List<SubImage>? subImages { get; set; }
+        public List<Note>? Notes { get; set; }
+        public List<SubImage>? SubImages { get; set; }
 
-        public List<Tag> tags { get; set; }
+        public List<Tag> Tags { get; set; }
 
         public PostDto GetPost()
         {
             PostDto dto = new PostDto();
-            dto.postId = postId;
-            dto.title = title;
-            dto.mainImageUrl = mainImageUrl;
-            dto.postDate = postDate;
-            dto.notes = notes;
-            dto.subImages = subImages;
+            dto.PostId = PostId;
+            dto.Title = Title;
+            dto.MainImageUrl = MainImageUrl;
+            dto.PostDate = PostDate;
+            dto.Notes = Notes;
+            dto.SubImages = SubImages;
 
             return dto;
         }

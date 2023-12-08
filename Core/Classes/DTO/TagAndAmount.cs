@@ -4,8 +4,8 @@ namespace Core.Classes.DTO
 {
     public class TagAndAmount
         {
-            public Tag tag { get; set; }
-            public int count { get; set; }
+            public Tag Tag { get; set; }
+            public int Count { get; set; }
         }
     
 }

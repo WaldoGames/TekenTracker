@@ -9,12 +9,12 @@ namespace Core.Classes.DTO
 {
     public class PostDto
     {
-        public int postId { get; set; }
-        public string title { get; set; }
-        public string mainImageUrl { get; set; }
-        public DateTime postDate { get; set; }
-        public List<Note>? notes { get; set; }
-        public List<SubImage>? subImages { get; set; }
+        public int PostId { get; set; }
+        public string Title { get; set; }
+        public string MainImageUrl { get; set; }
+        public DateTime PostDate { get; set; }
+        public List<Note>? Notes { get; set; }
+        public List<SubImage>? SubImages { get; set; }
 
         public List<Tag>? Tags { get; set; } = new List<Tag>();
         public List<Tag>? RemovedTags { get; set; }

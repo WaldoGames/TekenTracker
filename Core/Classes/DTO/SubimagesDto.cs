@@ -9,6 +9,6 @@ namespace Core.Classes.DTO
 {
     public class SubimagesDto
     {
-        public List<SubImage>? images {  get; set; }
+        public List<SubImage>? Images {  get; set; }
     }
 }

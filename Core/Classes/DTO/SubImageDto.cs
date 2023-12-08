@@ -8,8 +8,8 @@ namespace Core.Classes.DTO
 {
     internal class SubImageDto
     {
-        public int subimageId { get; set; }
-        public string imageUrl { get; set; }
-        public DateTime uploadDate { get; set; }
+        public int SubimageId { get; set; }
+        public string ImageUrl { get; set; }
+        public DateTime UploadDate { get; set; }
     }
 }

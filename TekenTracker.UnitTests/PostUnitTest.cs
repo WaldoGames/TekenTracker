@@ -40,9 +40,9 @@ namespace TekenTracker.UnitTests
             TagFactory Tag = new TagFactory();
 
             GetOverviewMantPostsDto getOverviewMantPostsDto = new GetOverviewMantPostsDto();
-            getOverviewMantPostsDto.userId = 1;
-            getOverviewMantPostsDto.count = 25;
-            getOverviewMantPostsDto.offset = 0;
+            getOverviewMantPostsDto.UserId = 1;
+            getOverviewMantPostsDto.Count = 25;
+            getOverviewMantPostsDto.Offset = 0;
             //PostRepository.GetOverviewPost
             A.CallTo(() => postRepository.GetOverviewPost(getOverviewMantPostsDto)).Returns(
                 new Result<OverviewManyPostsDto>
@@ -103,9 +103,9 @@ namespace TekenTracker.UnitTests
             TagFactory Tag = new TagFactory();
 
             GetOverviewMantPostsDto getOverviewMantPostsDto = new GetOverviewMantPostsDto();
-            getOverviewMantPostsDto.userId = 1;
-            getOverviewMantPostsDto.count = 25;
-            getOverviewMantPostsDto.offset = 0;
+            getOverviewMantPostsDto.UserId = 1;
+            getOverviewMantPostsDto.Count = 25;
+            getOverviewMantPostsDto.Offset = 0;
             //PostRepository.GetOverviewPost
             A.CallTo(() => postRepository.GetOverviewPost(getOverviewMantPostsDto)).Returns(
                 new Result<OverviewManyPostsDto>

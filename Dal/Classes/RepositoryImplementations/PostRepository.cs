@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -119,11 +120,11 @@ namespace Dal.Classes.RepositoryImplementations
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        post.title= Convert.ToString(rdr["title"]);
-                        post.postDate = Convert.ToDateTime(rdr["post_date"]);
-                        post.mainImageUrl = Convert.ToString(rdr["main_image_url"]);
-                        post.user_Id = Convert.ToInt32(rdr["user_id"]);
-                        post.postId = Convert.ToInt32(rdr["post_id"]);
+                        post.Title= Convert.ToString(rdr["title"]);
+                        post.PostDate = Convert.ToDateTime(rdr["post_date"]);
+                        post.MainImageUrl = Convert.ToString(rdr["main_image_url"]);
+                        post.User_Id = Convert.ToInt32(rdr["user_id"]);
+                        post.PostId = Convert.ToInt32(rdr["post_id"]);
                         con.Close();
 
                         return new Result<Post> { Data = post };
@@ -180,8 +181,9 @@ namespace Dal.Classes.RepositoryImplementations
                         cmd.Parameters.AddWithValue("@Tag_" + id, id);
 
                     }
-                    FinalCommand += ") and posts.user_id = @userId) GROUP by(`posts`.`post_id`) HAVING COUNT(DISTINCT `tag`.`tag_id`) = @tagCount;";
-                    cmd.Parameters.AddWithValue("@userId", getPostsDto.userId);
+                    FinalCommand += ") and posts.user_id = @userId) GROUP by(`posts`.`post_id`)";
+                    if(getPostsDto.IsOneTagEnough == false) FinalCommand += "HAVING COUNT(DISTINCT `tag`.`tag_id`) = @tagCount;";
+                    cmd.Parameters.AddWithValue("@userId", getPostsDto.UserId);
                     cmd.Parameters.AddWithValue("@tagCount", getPostsDto.Tags.Count());
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = FinalCommand;
@@ -190,10 +192,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
                         PostDto post = new PostDto();
-                        post.title = Convert.ToString(rdr["title"]);
-                        post.postDate = Convert.ToDateTime(rdr["post_date"]);
-                        post.mainImageUrl = Convert.ToString(rdr["main_image_url"]);
-                        post.postId = Convert.ToInt32(rdr["post_id"]);
+                        post.Title = Convert.ToString(rdr["title"]);
+                        post.PostDate = Convert.ToDateTime(rdr["post_date"]);
+                        post.MainImageUrl = Convert.ToString(rdr["main_image_url"]);
+                        post.PostId = Convert.ToInt32(rdr["post_id"]);
                         overview.Posts.Add(post);
                     }
                     con.Close();
@@ -220,7 +222,7 @@ namespace Dal.Classes.RepositoryImplementations
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
                     string FinalCommand = "SELECT DISTINCT posts.title, posts.post_date, posts.main_image_url, posts.post_id FROM posts WHERE(posts.user_id = @userId) GROUP by(`posts`.`post_id`)";
-                    cmd.Parameters.AddWithValue("@userId", getPostsDto.userId);
+                    cmd.Parameters.AddWithValue("@userId", getPostsDto.UserId);
 
                     cmd.CommandType = CommandType.Text;
                     cmd.CommandText = FinalCommand;
@@ -229,10 +231,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
                         PostDto post = new PostDto();
-                        post.title = Convert.ToString(rdr["title"]);
-                        post.postDate = Convert.ToDateTime(rdr["post_date"]);
-                        post.mainImageUrl = Convert.ToString(rdr["main_image_url"]);
-                        post.postId = Convert.ToInt32(rdr["post_id"]);
+                        post.Title = Convert.ToString(rdr["title"]);
+                        post.PostDate = Convert.ToDateTime(rdr["post_date"]);
+                        post.MainImageUrl = Convert.ToString(rdr["main_image_url"]);
+                        post.PostId = Convert.ToInt32(rdr["post_id"]);
                         overview.Posts.Add(post);
                     }
                     con.Close();

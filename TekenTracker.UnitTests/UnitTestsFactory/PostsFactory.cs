@@ -16,10 +16,10 @@ namespace TekenTracker.UnitTests.UnitTestsFactory
             index++;
             return new PostDto
             {
-                mainImageUrl = "tmp",
-                postDate = new DateTime(2020, 4, 23),
-                title = title,
-                postId = index
+                MainImageUrl = "tmp",
+                PostDate = new DateTime(2020, 4, 23),
+                Title = title,
+                PostId = index
             };
         }
     }

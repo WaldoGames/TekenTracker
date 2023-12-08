@@ -9,8 +9,8 @@ namespace Core.Classes.Models
 {
     public class Tag
     {
-        public int tagId { get; set; }
-        public string name { get; set; }
-        public TagTypes type { get; set; }
+        public int TagId { get; set; }
+        public string Name { get; set; }
+        public TagTypes Type { get; set; }
     }
 }

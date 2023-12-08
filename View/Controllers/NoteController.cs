@@ -72,8 +72,8 @@ namespace View.Controllers
 
 
             newNote.NoteId = id;
-            newNote.Text = note.Data.text;
-            newNote.PostId = note.Data.postId;
+            newNote.Text = note.Data.Text;
+            newNote.PostId = note.Data.PostId;
 
             return View(newNote);
         }
@@ -95,7 +95,7 @@ namespace View.Controllers
                 return View("Error");
             }
 
-            return RedirectToAction("Details", "Post", new { id = ReturnNote.Data.postId });//return tagedit window(make sure id is in link)
+            return RedirectToAction("Details", "Post", new { id = ReturnNote.Data.PostId });//return tagedit window(make sure id is in link)
 
         }
     }

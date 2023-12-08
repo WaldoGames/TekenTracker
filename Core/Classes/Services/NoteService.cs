@@ -34,9 +34,9 @@ namespace Core.Classes.Services
             return new SimpleResult { };
         }
 
-        public SimpleResult UpdateNote(EditNoteDto Note)
+        public SimpleResult UpdateNote(EditNoteDto note)
         {
-            return noteRepository.UpdateNote(Note.NoteId, Note.Text);
+            return noteRepository.UpdateNote(note.NoteId, note.Text);
         }
 
         public NullableResult<Note> GetNoteById(int noteId)

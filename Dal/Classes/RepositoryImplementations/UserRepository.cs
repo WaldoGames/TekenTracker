@@ -56,7 +56,7 @@ namespace Dal.Classes.RepositoryImplementations
                     using (MySqlConnection con = new MySqlConnection(CS))
                     {
                         MySqlCommand cmd = new MySqlCommand("SELECT remember_token,valid_until FROM users WHERE user_id = @UserId LIMIT 1", con);
-                        cmd.Parameters.AddWithValue("@UserId", user.Data.userId);
+                        cmd.Parameters.AddWithValue("@UserId", user.Data.UserId);
                         cmd.CommandType = CommandType.Text;
                         con.Open();
 
@@ -126,9 +126,9 @@ namespace Dal.Classes.RepositoryImplementations
                 {
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("INSERT INTO users(username, password, email) VALUES(@user, @password, @email)", con);
-                    cmd.Parameters.AddWithValue("@user", newUser.userName);
-                    cmd.Parameters.AddWithValue("@password", encryption.EncryptNewString(newUser.password));
-                    cmd.Parameters.AddWithValue("@email", newUser.email);
+                    cmd.Parameters.AddWithValue("@user", newUser.UserName);
+                    cmd.Parameters.AddWithValue("@password", encryption.EncryptNewString(newUser.Password));
+                    cmd.Parameters.AddWithValue("@email", newUser.Email);
 
                     cmd.ExecuteNonQuery();
                     cmd.CommandType = CommandType.Text;
@@ -161,10 +161,10 @@ namespace Dal.Classes.RepositoryImplementations
                     while (rdr.Read())
                     {
 
-                        user.userId = Convert.ToInt32(rdr["user_id"]);
-                        user.userName = Convert.ToString(rdr["username"]);
-                        user.password = Convert.ToString(rdr["password"]);
-                        user.email = Convert.ToString(rdr["email"]);
+                        user.UserId = Convert.ToInt32(rdr["user_id"]);
+                        user.UserName = Convert.ToString(rdr["username"]);
+                        user.Password = Convert.ToString(rdr["password"]);
+                        user.Email = Convert.ToString(rdr["email"]);
 
                         TokenGenerator tokenGenerator = new TokenGenerator();
                         user.Token = tokenGenerator.GenerateToken();

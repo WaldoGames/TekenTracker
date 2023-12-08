@@ -41,9 +41,9 @@ namespace TekenTracker.UnitTests
         public void TryCreateNewUser_should_be_true()
         {
             NewUserDto newUser = new NewUserDto();
-            newUser.email = "email";
-            newUser.password = "password"; 
-            newUser.userName = "NewUser";
+            newUser.Email = "email";
+            newUser.Password = "password"; 
+            newUser.UserName = "NewUser";
 
             UserService userService = new UserService(new UserRepository());
 
@@ -56,9 +56,9 @@ namespace TekenTracker.UnitTests
         public void TryCreateNewUserWithExistingName_should_be_usernametaken()
         {
             NewUserDto newUser = new NewUserDto();
-            newUser.email = "email";
-            newUser.password = "password";
-            newUser.userName = "FirstUser";
+            newUser.Email = "email";
+            newUser.Password = "password";
+            newUser.UserName = "FirstUser";
 
             UserService userService = new UserService(new UserRepository());
 
@@ -95,7 +95,7 @@ namespace TekenTracker.UnitTests
 
             Result<LoginDto> LoginDto = userService.TryLogin("FirstUser", "helloWorldPassWord");
 
-            userRepository.testMoveTokenValidTimeToPast(LoginDto.Data.User.userId);
+            userRepository.testMoveTokenValidTimeToPast(LoginDto.Data.User.UserId);
 
             Assert.False(userService.ChecKLoginStatus(LoginDto.Data.User).Data);
         }

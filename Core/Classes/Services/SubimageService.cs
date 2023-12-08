@@ -18,13 +18,13 @@ namespace Core.Classes.Services
         }
         public SimpleResult AddNewSubimage(NewSubimageDto subimageDto)
         {
-            return SubimageRepository.AddNewSubimage(subimageDto.postId, subimageDto.imageUrl);
+            return SubimageRepository.AddNewSubimage(subimageDto.PostId, subimageDto.ImageUrl);
         }
         public SimpleResult AddManySubimagesNewPost(List<NewSubimageDto> newSubimages, int postId)
         {
             foreach (NewSubimageDto newSubimage in newSubimages)
             {
-                newSubimage.postId = postId;
+                newSubimage.PostId = postId;
                 if (AddNewSubimage(newSubimage).IsFailed)
                 {
                     return new SimpleResult { ErrorMessage = "SubimageServices->TryAddManySubimagesNewPost: Error passed from AddNewSubimage" };

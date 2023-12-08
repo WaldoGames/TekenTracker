@@ -13,18 +13,18 @@ namespace TekenTracker.UnitTests
         public List<User> users = new List<User>()
         {
             new User{
-                userId = 1,
-                password = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.",
-                userName = "FirstUser",
-                email = "user@mail.com",
+                UserId = 1,
+                Password = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.",
+                UserName = "FirstUser",
+                Email = "user@mail.com",
                 Token = Guid.NewGuid().ToString(),
                 TokenValidUntil = DateTime.Now.AddSeconds(60),
             },
                         new User{
-                userId = 2,
-                password = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.",
-                userName = "SecondUser",
-                email = "user@mail.com",
+                UserId = 2,
+                Password = "$2a$11$2yuIcgA7BCvQyvMjl0FvpeCyfFV0d9EIaA7yPebJEfz13SL1eEvL.",
+                UserName = "SecondUser",
+                Email = "user@mail.com",
                 Token = Guid.NewGuid().ToString(),
                 TokenValidUntil = DateTime.Now.AddSeconds(60),
             },
@@ -32,25 +32,25 @@ namespace TekenTracker.UnitTests
 
         public List<Note> notes = new List<Note>() {
         
-            new Note{ noteId = 1, postId = 1, uploadDate=new DateTime(2023,11,10), text="note 1" },
-            new Note{ noteId = 2, postId = 2, uploadDate=new DateTime(2023,11,11), text="note 2" },
+            new Note{ NoteId = 1, PostId = 1, UploadDate=new DateTime(2023,11,10), Text="note 1" },
+            new Note{ NoteId = 2, PostId = 2, UploadDate=new DateTime(2023,11,11), Text="note 2" },
         };
 
         public List<SubImage> subImages = new List<SubImage>
         {
-            new SubImage{subimageId = 1 ,postId = 1, uploadDate = new DateTime(2023,11,10), imageUrl="url1"},
-            new SubImage{subimageId = 2 ,postId = 1, uploadDate = new DateTime(2023,11,10), imageUrl="url2"},
-            new SubImage{subimageId = 3 ,postId = 2, uploadDate = new DateTime(2023,11,10), imageUrl="url3"},
+            new SubImage{SubimageId = 1 ,PostId = 1, UploadDate = new DateTime(2023,11,10), ImageUrl="url1"},
+            new SubImage{SubimageId = 2 ,PostId = 1, UploadDate = new DateTime(2023,11,10), ImageUrl="url2"},
+            new SubImage{SubimageId = 3 ,PostId = 2, UploadDate = new DateTime(2023,11,10), ImageUrl="url3"},
 
         };
 
         public List<Post> posts = new List<Post>()
             {
-                new Post{ postId = 1, title = "Post1", mainImageUrl = "url1", postDate= new DateTime(2023,11,15)},
-                new Post{ postId = 2, title = "Post2", mainImageUrl = "url2", postDate= new DateTime(2023,11,15)},
-                new Post{ postId = 3, title = "Post3", mainImageUrl = "url3", postDate= new DateTime(2023,11,15)},
-                new Post{ postId = 4, title = "Post4", mainImageUrl = "url4", postDate= new DateTime(2023,11,15)},
-                new Post{ postId = 5, title = "Post5", mainImageUrl = "url5", postDate= new DateTime(2023,11,15)},
+                new Post{ PostId = 1, Title = "Post1", MainImageUrl = "url1", PostDate= new DateTime(2023,11,15)},
+                new Post{ PostId = 2, Title = "Post2", MainImageUrl = "url2", PostDate= new DateTime(2023,11,15)},
+                new Post{ PostId = 3, Title = "Post3", MainImageUrl = "url3", PostDate= new DateTime(2023,11,15)},
+                new Post{ PostId = 4, Title = "Post4", MainImageUrl = "url4", PostDate= new DateTime(2023,11,15)},
+                new Post{ PostId = 5, Title = "Post5", MainImageUrl = "url5", PostDate= new DateTime(2023,11,15)},
             };
     }
 }
