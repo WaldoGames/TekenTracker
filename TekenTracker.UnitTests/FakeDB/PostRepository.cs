@@ -39,7 +39,7 @@ namespace TekenTracker.UnitTests.FakeDB
             }
         }
 
-        public Result<bool> doesPostExist(int postId)
+        public Result<bool> DoesPostExist(int postId)
         {
             return new Result<bool> { Data = container.posts.Select(p => p.PostId).Contains(postId) };
         }

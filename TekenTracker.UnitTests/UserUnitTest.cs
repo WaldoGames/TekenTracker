@@ -7,7 +7,7 @@ using TekenTracker.UnitTests.FakeDB;
 
 namespace TekenTracker.UnitTests
 {
-    public class UserAndUserRelatedFuntionsUnitTest
+    public class UserUnitTest
     {
         [Fact]
         public void TryLogin_should_be_true()

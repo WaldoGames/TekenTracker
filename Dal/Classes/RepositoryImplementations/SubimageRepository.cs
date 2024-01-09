@@ -17,22 +17,21 @@ namespace Dal.Classes.RepositoryImplementations
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
-        public Result<bool> DoesSubimageExist(int SubimageId)
+        public Result<bool> DoesSubimageExist(int subimageId)
         {
             throw new NotImplementedException();
         }
 
-        public SimpleResult AddNewSubimage(int PostId, string NewUrl)
+        public SimpleResult AddNewSubimage(int postId, string newUrl)
         {
-
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("INSERT INTO subimage(image_url , upload_date, post_id) VALUES(@NewUrl, @date, @postId)", con);
-                    cmd.Parameters.AddWithValue("@postId", PostId);
-                    cmd.Parameters.AddWithValue("@newUrl", NewUrl);
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@newUrl", newUrl);
                     cmd.Parameters.AddWithValue("@date", DateTime.Now);
                     cmd.CommandType = CommandType.Text;
                     MySqlDataReader rdr = cmd.ExecuteReader();
@@ -44,11 +43,10 @@ namespace Dal.Classes.RepositoryImplementations
             {
                 return new SimpleResult { ErrorMessage = "SubimageRepository->AddNewSubimage: "+ e.Message };
                 throw;
-            }
-            
+            }         
         }
 
-        public Result<SubimagesDto> GetSubimagesFromPost(int PostId)
+        public Result<SubimagesDto> GetSubimagesFromPost(int postId)
         {
             SubimagesDto subimages = new SubimagesDto();
             subimages.Images = new List<SubImage>();
@@ -57,10 +55,8 @@ namespace Dal.Classes.RepositoryImplementations
             {
                 try
                 {
-
-
                 MySqlCommand cmd = new MySqlCommand("SELECT * FROM subimage WHERE post_id = @id", con);
-                cmd.Parameters.AddWithValue("@id", PostId);
+                cmd.Parameters.AddWithValue("@id", postId);
                 cmd.CommandType = CommandType.Text;
                 con.Open();
 
@@ -95,12 +91,12 @@ namespace Dal.Classes.RepositoryImplementations
             
         }
 
-        public SimpleResult RemoveNewSubimage(int SubimageId)
+        public SimpleResult RemoveNewSubimage(int subimageId)
         {
             throw new NotImplementedException();
         }
 
-        public SimpleResult UpdateSubimage(int PostId, string UpdatesUrl)
+        public SimpleResult UpdateSubimage(int postId, string updatesUrl)
         {
             throw new NotImplementedException();
         }

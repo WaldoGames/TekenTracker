@@ -11,9 +11,6 @@ namespace Core.Classes
 {
     public class Encryption//put back on internal after test(12-10-2023)
     {
-
-        //const int SaltLength = 1;
-
         public string EncryptNewString(string Password)
         {
             string pass = BC.HashPassword(Password);
@@ -24,8 +21,6 @@ namespace Core.Classes
         public bool CompareEncryptedString(string Password, string EncyptedPassword)
         {
             bool tmp = BC.Verify(Password, EncyptedPassword);
-
-            int i = 11 + 1;
 
             return tmp;
         }

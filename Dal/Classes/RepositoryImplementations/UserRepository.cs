@@ -17,27 +17,27 @@ namespace Dal.Classes.RepositoryImplementations
     public class UserRepository : IUserRepository
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
-        public Result<bool> DoesUserExistInDB(string UserName)
+        public Result<bool> DoesUserExistInDB(string userName)
         {
-            bool DoesUserExist = false;
+            bool doesUserExist = false;
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM users WHERE username = @username LIMIT 1", con);
-                    cmd.Parameters.AddWithValue("@username", UserName);
+                    cmd.Parameters.AddWithValue("@username", userName);
                     cmd.CommandType = CommandType.Text;
                     con.Open();
 
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     while (rdr.Read())
                     {
-                        DoesUserExist = true;
+                        doesUserExist = true;
                     }
                     con.Close();
 
                 }
-                return new Result<bool> { Data = DoesUserExist };
+                return new Result<bool> { Data = doesUserExist };
             }
             catch (Exception e)
             {
@@ -45,11 +45,11 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public Result<bool> IsTokenValid(string Username, string Token)
+        public Result<bool> IsTokenValid(string username, string token)
         {
             try
             {
-            Result<User> user = GetUser(Username);
+            Result<User> user = GetUser(username);
 
                 if (user.Data != null && user.IsFailed == false)
                 {
@@ -67,7 +67,7 @@ namespace Dal.Classes.RepositoryImplementations
                             string DBtoken = Convert.ToString(rdr["remember_token"]);
                             DateTime dateTime = Convert.ToDateTime(rdr["valid_until"]);
                             con.Close();
-                            if (Token != DBtoken || DateTime.Now > dateTime)
+                            if (token != DBtoken || DateTime.Now > dateTime)
                             {
                                 return new Result<bool> { Data = false };
                             }
@@ -88,27 +88,27 @@ namespace Dal.Classes.RepositoryImplementations
             return new Result<bool> { ErrorMessage = "UserRepository->IsTokenValid: " + "unknown error(likly the user could not be found)" };
         }
 
-        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int UserId)
+        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int userId)
         {
-            CheckAccountTokenDTO AccountToken = new CheckAccountTokenDTO();
+            CheckAccountTokenDTO accountToken = new CheckAccountTokenDTO();
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
                     TokenGenerator tokenGenerator = new TokenGenerator();
-                    AccountToken.Token = tokenGenerator.GenerateToken();
-                    AccountToken.ValidUntil = DateTime.Now.AddHours(2);
+                    accountToken.Token = tokenGenerator.GenerateToken();
+                    accountToken.ValidUntil = DateTime.Now.AddHours(2);
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("UPDATE users SET remember_token = @newToken, valid_until = @until WHERE user_id = @UserId ", con);
-                    cmd.Parameters.AddWithValue("@UserId", UserId);
-                    cmd.Parameters.AddWithValue("@newToken", AccountToken.Token);
-                    cmd.Parameters.AddWithValue("@until", AccountToken.ValidUntil);
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@newToken", accountToken.Token);
+                    cmd.Parameters.AddWithValue("@until", accountToken.ValidUntil);
 
                     cmd.ExecuteNonQuery();
                     cmd.CommandType = CommandType.Text;
 
                     con.Close();
-                    return new Result<CheckAccountTokenDTO> { Data = AccountToken };
+                    return new Result<CheckAccountTokenDTO> { Data = accountToken };
                 }
             }
             catch (Exception e)
@@ -144,7 +144,7 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public Result<User> GetUser(string Username)
+        public Result<User> GetUser(string username)
         {
             try
             {
@@ -153,7 +153,7 @@ namespace Dal.Classes.RepositoryImplementations
                 {
                    
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM users WHERE username = @username LIMIT 1", con);
-                    cmd.Parameters.AddWithValue("@username", Username);
+                    cmd.Parameters.AddWithValue("@username", username);
                     cmd.CommandType = CommandType.Text;
                     con.Open();
 
@@ -181,9 +181,11 @@ namespace Dal.Classes.RepositoryImplementations
             }
 
         }
-        public SimpleResult RemoveUserFromDB(int UserId)
+        public SimpleResult RemoveUserFromDB(int userId)
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

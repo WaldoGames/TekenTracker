@@ -17,6 +17,7 @@ namespace View.Controllers
         //return View("~/Views/Wherever/SomeDir/MyView.aspx")
         // GET: UserController
         UserService userService = new UserService(new UserRepository());
+        //PostService
         SessionController sessionController;
         public UserController(IMemoryCache cache):base(cache) 
         {
@@ -29,8 +30,8 @@ namespace View.Controllers
                 return View();
             }
 
-            return View("LogedIn");
-            
+            return RedirectToAction("LogedIn");
+
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -52,15 +53,27 @@ namespace View.Controllers
         {
             UserObject user = new UserObject();
             sessionController.GetUserFromSession(out UserDto? userDto);
+
+            UserLogedinModel model = new UserLogedinModel();
+            PostService ps = new PostService(new PostRepository(), new NoteRepository(), new SubimageRepository(), new TagRepository());
+
             if (userDto != null)
             {
                 user.username = userDto.UserName;
                 user.email = userDto.Email;
-                return View(user);
+                model.username = userDto.UserName;
+                Result<List<string>> sl = ps.GetRandomImagesFromUser(userDto.UserId);
+                if (!sl.IsFailed)
+                {
+                    model.Images = sl.Data;
+                }
+                
+
+                return View(model);
             }
             else
             {
-                return View();
+                return RedirectToAction("error");
                 //error?
             }
         }

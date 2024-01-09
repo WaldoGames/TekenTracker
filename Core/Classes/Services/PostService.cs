@@ -17,7 +17,6 @@ namespace Core.Classes.Services
         INoteRepository NoteRepository;
         ISubImageRepository SubImageRepository;
         ITagRepository TagRepository;
-        TagService TagService;
         NoteService NoteServices;
         SubimageService SubimageService;
 
@@ -28,7 +27,6 @@ namespace Core.Classes.Services
             this.SubImageRepository = subImageRepository;
             this.TagRepository = tagRepository;
 
-            TagService = new TagService(TagRepository);
             NoteServices = new NoteService(NoteRepository);
             SubimageService = new SubimageService(SubImageRepository);
             
@@ -135,7 +133,7 @@ namespace Core.Classes.Services
         }
         public SimpleResult DeletePost(int postId)
         {
-            Result<bool> result= PostRepository.doesPostExist(postId);
+            Result<bool> result= PostRepository.DoesPostExist(postId);
 
             if (result.IsFailed)
             {
@@ -199,6 +197,12 @@ namespace Core.Classes.Services
         {
             return SubimageService.AddNewSubimage(newSubimage);
         }
-        
+
+        public Result<List<string>> GetRandomImagesFromUser(int userId, int max = 9)
+        {
+            return PostRepository.GetRandomImagesFromUser(userId, max);
+        }
+
+
     }
 }

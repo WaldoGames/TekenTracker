@@ -10,10 +10,10 @@ namespace Core.Interfaces.Repository
 {
     public interface ISubImageRepository
     {
-        public Result<SubimagesDto> GetSubimagesFromPost(int PostId);
-        public SimpleResult AddNewSubimage(int PostId, string NewUrl);
-        public SimpleResult UpdateSubimage(int PostId, string UpdatesUrl);
-        public SimpleResult RemoveNewSubimage(int SubimageId);
-        public Result<bool> DoesSubimageExist(int SubimageId);
+        public Result<SubimagesDto> GetSubimagesFromPost(int postId);
+        public SimpleResult AddNewSubimage(int postId, string newUrl);
+        public SimpleResult UpdateSubimage(int postId, string updatesUrl);
+        public SimpleResult RemoveNewSubimage(int subimageId);
+        public Result<bool> DoesSubimageExist(int subimageId);
     }
 }

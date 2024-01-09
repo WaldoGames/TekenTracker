@@ -26,7 +26,6 @@ namespace Dal.Classes.RepositoryImplementations
         {
             try
             {
-
                 bool returnVal = false;
 
                 using (MySqlConnection con = new MySqlConnection(CS))
@@ -147,7 +146,7 @@ namespace Dal.Classes.RepositoryImplementations
 
         public Result<List<Tag>> GetTagsFromPost(int postId)
         {
-            List<Tag>  tags = new List<Tag>();
+            List<Tag> tags = new List<Tag>();
 
             try
             {
@@ -183,7 +182,7 @@ namespace Dal.Classes.RepositoryImplementations
 
         public Result<List<Tag>> GetTagsUsedByUser(int userId)
         {
-            List<Tag>  tags = new List<Tag>();
+            List<Tag> tags = new List<Tag>();
 
             try
             {
@@ -246,9 +245,9 @@ namespace Dal.Classes.RepositoryImplementations
                 return new SimpleResult { ErrorMessage = "TagRepository->TryRemoveTagFromPost: " + e.Message };
             }
         }
-        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfPost(int Reach, int UserId)
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfPost(int reach, int userId)
         {
-            List<TagAndAmount> TagsAndAmount = new List<TagAndAmount>();
+            List<TagAndAmount> tagsAndAmount = new List<TagAndAmount>();
 
             try
             {
@@ -267,8 +266,8 @@ namespace Dal.Classes.RepositoryImplementations
                                         "INNER JOIN tag ON posttag.tag_id = tag.tag_id " +
                                         "WHERE tag.type = 2 " +
                                         "GROUP BY tag.tag_id ORDER BY COUNT(tag.tag_id) DESC; ";
-                    cmd.Parameters.AddWithValue("@userid", UserId); 
-                    cmd.Parameters.AddWithValue("@limit", Reach);
+                    cmd.Parameters.AddWithValue("@userid", userId); 
+                    cmd.Parameters.AddWithValue("@limit", reach);
                     cmd.CommandType = CommandType.Text;
 
                     MySqlDataReader rdr = cmd.ExecuteReader();
@@ -285,11 +284,11 @@ namespace Dal.Classes.RepositoryImplementations
                         tagAndAmount.Tag = tag;
                         tagAndAmount.Count = Convert.ToInt32(rdr["count"]);
 
-                        TagsAndAmount.Add(tagAndAmount);
+                        tagsAndAmount.Add(tagAndAmount);
                     }
 
                     con.Close();
-                    return new Result<List<TagAndAmount>> { Data = TagsAndAmount };
+                    return new Result<List<TagAndAmount>> { Data = tagsAndAmount };
                 }
             }
             catch (Exception e)
@@ -298,9 +297,9 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfDays(int Reach, int UserId)
+        public Result<List<TagAndAmount>> GetSearchTagsInLastNumberOfDays(int reach, int userId)
         {
-            List<TagAndAmount> TagsAndAmount = new List<TagAndAmount>();
+            List<TagAndAmount> tagsAndAmount = new List<TagAndAmount>();
 
             try
             {
@@ -324,8 +323,8 @@ namespace Dal.Classes.RepositoryImplementations
                                         "WHERE tag.type = 2 " +
                                         "GROUP BY tag.tag_id " +
                                         "ORDER BY COUNT(tag.tag_id) DESC; ";
-                    cmd.Parameters.AddWithValue("@userid", UserId);
-                    cmd.Parameters.AddWithValue("@limit", Reach);
+                    cmd.Parameters.AddWithValue("@userid", userId);
+                    cmd.Parameters.AddWithValue("@limit", reach);
                     cmd.CommandType = CommandType.Text;
 
                     MySqlDataReader rdr = cmd.ExecuteReader();
@@ -342,11 +341,11 @@ namespace Dal.Classes.RepositoryImplementations
                         tagAndAmount.Tag = tag;
                         tagAndAmount.Count = Convert.ToInt32(rdr["count"]);
 
-                        TagsAndAmount.Add(tagAndAmount);
+                        tagsAndAmount.Add(tagAndAmount);
                     }
 
                     con.Close();
-                    return new Result<List<TagAndAmount>> { Data = TagsAndAmount };
+                    return new Result<List<TagAndAmount>> { Data = tagsAndAmount };
                 }
             }
             catch (Exception e)

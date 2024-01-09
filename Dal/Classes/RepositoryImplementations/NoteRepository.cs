@@ -16,14 +16,14 @@ namespace Dal.Classes.RepositoryImplementations
     {
         string CS = "SERVER=127.0.0.1;UID=root;PASSWORD=;DATABASE=tekentrackerdb";
 
-        public Result<bool> DoesNoteExist(int NoteId)
+        public Result<bool> DoesNoteExist(int noteId)
         {
             try
             {
                 using (MySqlConnection con = new MySqlConnection(CS))
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM note WHERE note_id = @id LIMIT 1", con);
-                    cmd.Parameters.AddWithValue("@id", NoteId);
+                    cmd.Parameters.AddWithValue("@id", noteId);
                     cmd.CommandType = CommandType.Text;
                     con.Open();
 
@@ -47,7 +47,7 @@ namespace Dal.Classes.RepositoryImplementations
             return new Result<bool> { Data = false };
         }
 
-        public SimpleResult AddNewNote(int PostId, string NewNote)
+        public SimpleResult AddNewNote(int postId, string newNote)
         {
             try
             {
@@ -55,8 +55,8 @@ namespace Dal.Classes.RepositoryImplementations
                 {
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("INSERT INTO note(text, upload_date, post_id) VALUES(@newNote, @date, @postId)", con);
-                    cmd.Parameters.AddWithValue("@postId", PostId);
-                    cmd.Parameters.AddWithValue("@newNote", NewNote);
+                    cmd.Parameters.AddWithValue("@postId", postId);
+                    cmd.Parameters.AddWithValue("@newNote", newNote);
                     cmd.Parameters.AddWithValue("@date", DateTime.Now);
                     cmd.CommandType = CommandType.Text;
                     MySqlDataReader rdr = cmd.ExecuteReader();               
@@ -71,7 +71,7 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public Result<NotesDto> GetNotesFromPost(int PostId)
+        public Result<NotesDto> GetNotesFromPost(int postId)
         {
             NotesDto notes = new NotesDto();
             notes.Notes = new List<Note>();
@@ -80,7 +80,7 @@ namespace Dal.Classes.RepositoryImplementations
                 try
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM note WHERE post_id = @id", con);
-                    cmd.Parameters.AddWithValue("@id", PostId);
+                    cmd.Parameters.AddWithValue("@id", postId);
                     cmd.CommandType = CommandType.Text;
                     con.Open();
 
@@ -114,12 +114,12 @@ namespace Dal.Classes.RepositoryImplementations
             return new Result<NotesDto> { ErrorMessage = "NoteRepository->GetNotesFromPost: unkown error" };
         }
 
-        public SimpleResult RemoveNewNote(int NoteId)
+        public SimpleResult RemoveNewNote(int noteId)
         {
             throw new NotImplementedException();
         }
 
-        public SimpleResult UpdateNote(int NoteId, string NewText)
+        public SimpleResult UpdateNote(int noteId, string newText)
         {
             try
             {
@@ -127,8 +127,8 @@ namespace Dal.Classes.RepositoryImplementations
                 {
                     con.Open();
                     MySqlCommand cmd = new MySqlCommand("UPDATE note SET text=@newtext WHERE note_id = @noteId", con);
-                    cmd.Parameters.AddWithValue("@newtext", NewText);
-                    cmd.Parameters.AddWithValue("@noteId", NoteId);
+                    cmd.Parameters.AddWithValue("@newtext", newText);
+                    cmd.Parameters.AddWithValue("@noteId", noteId);
                     cmd.CommandType = CommandType.Text;
                     MySqlDataReader rdr = cmd.ExecuteReader();
                     con.Close();
@@ -142,7 +142,7 @@ namespace Dal.Classes.RepositoryImplementations
             }
         }
 
-        public Result<Note> GetNoteById(int NoteId)
+        public Result<Note> GetNoteById(int noteId)
         {
             Note note = new Note();
             using (MySqlConnection con = new MySqlConnection(CS))
@@ -150,7 +150,7 @@ namespace Dal.Classes.RepositoryImplementations
                 try
                 {
                     MySqlCommand cmd = new MySqlCommand("SELECT * FROM note WHERE note_id = @id", con);
-                    cmd.Parameters.AddWithValue("@id", NoteId);
+                    cmd.Parameters.AddWithValue("@id", noteId);
                     cmd.CommandType = CommandType.Text;
                     con.Open();
 

@@ -1,5 +1,32 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model View.Models.UserLogedinModel
+
 @{
+    ViewData["Title"] = "Create";
 }
+
+<h1>Welkom @Model.username</h1>
+
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Design by foolishdeveloper.com -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+    <link href="Slider.css" rel="Stylesheet" type="text/css" />
+
+</head>
+<body>
+   <div class="slider">
+     <div class="rotator">
+            @foreach (string i in Model.Images)
+            {
+                <div class="items">
+                <img src="@i" alt="items photo" />
+                </div>
+            }
+        </div>
+  </div>
+</body>
+</html>

@@ -12,14 +12,14 @@ namespace Core.Interfaces.Repository
     public interface IUserRepository
     {
         public SimpleResult AddUserToDB(NewUserDto newUser);
-        public SimpleResult RemoveUserFromDB(int UserId);
+        public SimpleResult RemoveUserFromDB(int userId);
       //public bool tryGetAccountToken(int UserId, out CheckAccountTokenDTO AccountToken);
-        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int UserId);
+        public Result<CheckAccountTokenDTO> AddNewAccountTokenToDB(int userId);
 
-        public Result<bool> DoesUserExistInDB(string UserName);
-        public Result<User> GetUser(string Username);
+        public Result<bool> DoesUserExistInDB(string username);
+        public Result<User> GetUser(string username);
 
-        public Result<bool> IsTokenValid(string Username, string Token);
+        public Result<bool> IsTokenValid(string username, string token);
 
     }
 }   
