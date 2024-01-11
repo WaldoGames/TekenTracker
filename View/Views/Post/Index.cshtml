@@ -3,26 +3,29 @@
 @{
     ViewData["Title"] = "Posts";
 }
+
 <li class="nav-item">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Create">Post aan maken</a>
+    <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Create">Create a new post</a>
 </li>
+<div class="left-right">
+<div class="left-section">
+    <div class="container">
 
-<div class="container">
-@foreach (var emp in Model.posts)
-{
+    @foreach (var emp in Model.posts)
+    {
 
-        <li class="item">
-        @emp.Title -- <a asp-controller="Post" asp-action="Details" asp-route-id="@emp.PostId">Details</a>
-        @if (emp.MainImageUrl != null && emp.MainImageUrl != "")
-        {
-            <br>
-            <img width="100%" src="~/Images/@emp.MainImageUrl" />
-        }
-    </li>
-
-
-}
-
+            <li class="item">
+            @emp.Title -- <a asp-controller="Post" asp-action="Details" asp-route-id="@emp.PostId">Details</a>
+            @if (emp.MainImageUrl != null && emp.MainImageUrl != "")
+            {
+                <br>
+                <img class="image-basic" src="~/Images/@emp.MainImageUrl" />
+            }
+        </li>
+    }
+    </div>
+</div>
+<div class="right-section">
 @if (ViewBag.Tags != null)
     {
         <form method="GET">
@@ -32,11 +35,13 @@
                 <label>
 
                     @Html.CheckBoxFor(x => x.IsOneTagEnough) 
-                    een tag per post is genoeg
+                    Search for single tag matches?
                 </label>
                 <br />
 
                 </div>
+
+                <hr />
 
                 @foreach (var tag in ViewBag.Tags as List<Core.Classes.Models.Tag>)
                 {
@@ -49,10 +54,12 @@
                 }
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="search" class="btn btn-primary" />
             </div>
         </form>
     }
+
+</div>
 </div>
 <style>
     .container {
@@ -66,5 +73,30 @@
       width: 20%; 
       min-width: 200px;
       margin: 10px;
+    }
+
+    .left-right{
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        height: auto;
+    }
+
+    .left-section {
+        min-width: 80%;
+        flex: 5;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .right-section {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .image-basic{
+        width: 100%;
+        max-width: 300px;
     }
 </style>

@@ -38,5 +38,9 @@ namespace View.Controllers
                 return false;
             }
         }
+        public void Logout()
+        {
+            _cache.Remove(userCacheKey);
+        }
     }
 }

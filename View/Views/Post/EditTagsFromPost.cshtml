@@ -4,16 +4,14 @@
     ViewData["Title"] = "EditTagsFromPost";
 }
 
-<h1>TagEdit</h1>
-
-<h4>TestModelTagEdit</h4>
+<h1>edit post tags</h1>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="EditTagsFromPost" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-            <h2>Tags</h2>
+            <h2>search tags</h2>
             @foreach (var tag in ViewBag.Tags as List<Core.Classes.Models.Tag>)
             {
                 <div>
@@ -25,7 +23,7 @@
                 </div>
             }
             <br/>
-            <h2>Verbeter punten</h2>
+            <h2>improvement tags</h2>
             @foreach (var tag in ViewBag.ImprovementTags as List<Core.Classes.Models.Tag>)
             {
                 <div>

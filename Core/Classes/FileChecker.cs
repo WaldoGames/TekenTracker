@@ -9,7 +9,7 @@ namespace Core.Classes
 {
 	public class FileChecker
 	{
-		int UploadSizeLimitInMb = 10;
+		int UploadSizeLimitInMb = 50;
 
 		public FileUploadPreCheckValue TestFile(IFormFile Ifile)
 		{

@@ -62,7 +62,7 @@ namespace View.Controllers
                 return View("error");
             }
 
-            mainPageViewModel.posts = posts.Data.Posts;
+            mainPageViewModel.posts = posts.Data.Posts.OrderByDescending(p=>p.PostDate).ToList();
             Result<List<Tag>> c = tagService.GetSearchTagsFromUser(user.UserId);
 
             if (c.IsFailed)

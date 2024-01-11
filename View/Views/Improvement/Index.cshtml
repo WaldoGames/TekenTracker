@@ -24,10 +24,8 @@
 }
 </style>
 
-<h1>Index</h1>
-
 <div>
-    <h4>ImprovementViewModel</h4>
+    <h4>points of improvement</h4>
     <hr />
 
     <div class="grid-container">
@@ -55,11 +53,11 @@
         <div class="form-group">
             @if(Model.SearchLimits.TimeOrAmount == TimeOrAmount.time)
             {
-                <p id="reachLable">verbeter punten voor hoe veel dagen terug: </p>
+                <p id="reachLable">improvement points from how many days ago until now?: </p>
             }
             else
             {
-                                <p id="reachLable">verbeter punten voor hoe veel posts terug: </p>
+                                <p id="reachLable">improvement points for how many posts back: </p>
             }
             
             <input asp-for="SearchLimits.Reach" class="form-control" />
@@ -69,7 +67,7 @@
 
 
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="send" class="btn btn-primary" />
             </div>
         </form>
 
@@ -88,9 +86,9 @@
 
     function onRadioButtonClick(itemName) {
         if (itemName == "amount") {
-            document.getElementById('reachLable').innerHTML = "verbeter punten voor hoe veel posts terug: "
+            document.getElementById('reachLable').innerHTML = "improvement points for how many posts back: "
         } else if (itemName == "time"){
-            document.getElementById('reachLable').innerHTML = "verbeter punten voor hoe veel dagen terug: "
+            document.getElementById('reachLable').innerHTML = "improvement points from how many days ago until now?: "
         }
     }
 </script>

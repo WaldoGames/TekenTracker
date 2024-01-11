@@ -295,7 +295,7 @@ namespace Dal.Classes.RepositoryImplementations
                     }
                     con.Close();
 
-                    allString.OrderBy(s => Guid.NewGuid());
+                    allString = allString.OrderBy(s => Guid.NewGuid()).ToList();
 
                     return new Result<List<string>> { Data = allString.Take(max).ToList() };
                 }
