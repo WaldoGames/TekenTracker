@@ -100,12 +100,22 @@ namespace View.Controllers
         public ActionResult Create(NewPostViewModel newPost)
         {
             //create the post (make sure to return the id)
+            if(newPost == null)
+            {
+                newPost = new NewPostViewModel();
+            }
 
             FileUploadPreCheckValue FileTest = fileChecker.TestFile(newPost.image);
 
-            if(FileTest != FileUploadPreCheckValue.Accepted)
+            if (FileTest == FileUploadPreCheckValue.NoValidFIleType)
             {
-                return View("error");
+                newPost.ErrorMessage = "filetype not supported";
+                return View(newPost);
+            }
+            if (FileTest == FileUploadPreCheckValue.TooLarge)
+            {
+                newPost.ErrorMessage = "file to large";
+                return View(newPost);
             }
 
             NewPostDto dto = new NewPostDto();
@@ -123,7 +133,8 @@ namespace View.Controllers
             Result<int> result = postService.PostPostToDB(dto);
             if (result.IsFailed)
             {
-                return View("error");
+                newPost.ErrorMessage = "something went wrong while trying to post your drawing. try again later";
+                return View(newPost);
             }
 
             return RedirectToAction("EditTagsFromPost", "Post", new { id = result.Data });//return tagedit window(make sure id is in link)

@@ -11,5 +11,7 @@ namespace View.Models
 
         public List<IFormFile>? subimages { get; set; }
         public string? Note {  get; set; }
+
+        public string? ErrorMessage { get; set; } = null;
     }
 }
