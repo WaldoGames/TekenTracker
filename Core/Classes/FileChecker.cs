@@ -50,9 +50,11 @@ namespace Core.Classes
             //a jpeg file signature dived in 2 parts. only dual part signature i have. if more added in the future program beter solution
             byte[] special1 = StringToByteArray("FFD8FFE1");
             byte[] special2 = StringToByteArray("457869660000");
-
+            //webp
+            byte[] special3 = StringToByteArray("52494646");
+            byte[] special4 = StringToByteArray("57454250");
             if (CheckImageFileSignature(file, special1) == true && CheckImageFileSignature(file, special2, 6) == true) return true;
-
+            if (CheckImageFileSignature(file, special3) == true && CheckImageFileSignature(file, special4, 8) == true) return true;
             foreach (var signature in Signatures)
             {
                 if (CheckImageFileSignature(file, signature) == true)
