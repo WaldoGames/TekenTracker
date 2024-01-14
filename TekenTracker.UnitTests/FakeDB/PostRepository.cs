@@ -81,5 +81,10 @@ namespace TekenTracker.UnitTests.FakeDB
         {
             throw new NotImplementedException();
         }
+
+        public Result<List<string>> GetRandomImagesFromUser(int userId, int max = 9)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
