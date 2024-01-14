@@ -207,7 +207,12 @@ namespace View.Controllers
         // GET: PostController/Delete/5
         public ActionResult Delete(int id)
         {
-            postService.DeletePost(id);
+            SimpleResult sr = postService.DeletePost(id);
+
+            if (sr.IsFailed)
+            {
+                return View("error");
+            }
 
             return RedirectToAction("Index", "Post", new { });
         }
@@ -237,9 +242,20 @@ namespace View.Controllers
         {
             FileUploadPreCheckValue FileTest = fileChecker.TestFile(model.Image);
 
-            if (FileTest != FileUploadPreCheckValue.Accepted)
+            if(model == null)
             {
-                return View("error");
+                model = new NewMainImageModel();
+            }
+
+            if (FileTest == FileUploadPreCheckValue.NoValidFIleType)
+            {
+                model.ErrorMessage = "filetype not supported";
+                return View(model);
+            }
+            if (FileTest == FileUploadPreCheckValue.TooLarge)
+            {
+                model.ErrorMessage = "file to large";
+                return View(model);
             }
 
 
@@ -264,7 +280,31 @@ namespace View.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult AddSubImage(int id, NewSubImagesModel model)
         {
-            List<NewSubimageDto> images = UploadManyImages(model.subimages);
+            if (model == null)
+            {
+                model = new NewSubImagesModel();
+            }
+            foreach (IFormFile image in model.Subimages)
+            {
+                FileUploadPreCheckValue FileTest = fileChecker.TestFile(image);
+                if (FileTest == FileUploadPreCheckValue.NoValidFIleType)
+                {
+                    model.ErrorMessage = "One or more subimage had a filetype that is not supported";
+                    return View(model);
+                }
+                if (FileTest == FileUploadPreCheckValue.TooLarge)
+                {
+                    model.ErrorMessage = "One or more files was to large to be uploaded";
+                    return View(model);
+                }
+            }
+           
+
+
+
+
+
+            List<NewSubimageDto> images = UploadManyImages(model.Subimages);
 
             images.ForEach(i => i.PostId = id);
 

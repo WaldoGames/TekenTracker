@@ -2,6 +2,8 @@
 {
     public class NewSubImagesModel
     {
-        public List<IFormFile>? subimages { get; set; }
+        public List<IFormFile>? Subimages { get; set; }
+
+        public string ErrorMessage { get; set; }
     }
 }

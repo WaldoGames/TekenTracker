@@ -9,6 +9,12 @@
 <h4>main image</h4>
 <hr />
 <div class="row">
+    @if (Model != null && Model.ErrorMessage != null)
+    {
+        <div style="background-color:white; color: red; width: 100%; height: 5%;">
+            <p>@Model.ErrorMessage</p>
+        </div>
+    }
     <div class="col-md-4">
         <form asp-action="ChangeMainImage" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

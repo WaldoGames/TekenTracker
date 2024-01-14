@@ -16,7 +16,7 @@ namespace Core.Interfaces.Repository
 
         public Result<Note> GetNoteById(int noteId);
         public SimpleResult AddNewNote(int postId, string newNote);
-        public SimpleResult RemoveNewNote(int noteId);
+        public SimpleResult RemoveNote(int noteId);
         public SimpleResult UpdateNote(int noteId, string newText);
         public Result<bool> DoesNoteExist(int noteId);
     }

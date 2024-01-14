@@ -114,9 +114,28 @@ namespace Dal.Classes.RepositoryImplementations
             return new Result<NotesDto> { ErrorMessage = "NoteRepository->GetNotesFromPost: unkown error" };
         }
 
-        public SimpleResult RemoveNewNote(int noteId)
+        public SimpleResult RemoveNote(int noteId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                using (MySqlConnection con = new MySqlConnection(CS))
+                {
+                    con.Open();
+                    MySqlCommand cmd = new MySqlCommand("SELECT * FROM test", con);
+                    cmd.CommandText = "DELETE FROM note WHERE(note_id = @noteId)";
+                    cmd.Parameters.AddWithValue("@noteId", noteId);
+
+                    cmd.ExecuteNonQuery();
+                    cmd.CommandType = CommandType.Text;
+
+                    con.Close();
+                    return new SimpleResult();
+                }
+            }
+            catch (Exception e)
+            {
+                return new SimpleResult { ErrorMessage = "NoteRepository->RemoveNote: " + e.Message };
+            }
         }
 
         public SimpleResult UpdateNote(int noteId, string newText)

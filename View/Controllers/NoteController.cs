@@ -98,5 +98,25 @@ namespace View.Controllers
             return RedirectToAction("Details", "Post", new { id = ReturnNote.Data.PostId });//return tagedit window(make sure id is in link)
 
         }
+
+
+        public ActionResult Delete(int id)
+        {
+            Result<Note> tmpNote = noteService.GetNoteById(id);
+
+            if(tmpNote.IsFailed)
+            {
+                return View("error");
+            }
+
+            SimpleResult sr = noteService.DeleteNote(id);
+
+            if (sr.IsFailed)
+            {
+                return View("error");
+            }
+
+            return RedirectToAction("Details", "Post", new { id = tmpNote.Data.PostId });
+        }
     }
 }

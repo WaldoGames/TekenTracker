@@ -60,5 +60,16 @@ namespace Core.Classes.Services
             }
             return new NullableResult<Note>(result);
         }
+        public SimpleResult DeleteNote(int noteId)
+        {
+            Result<bool> result = NoteRepository.DoesNoteExist(noteId);
+
+            if (result.IsFailed)
+            {
+                return new SimpleResult { ErrorMessage = "NoteService->DeleteNote could not confirm exisitance of post" };
+            }
+
+            return NoteRepository.RemoveNote(noteId);
+        }
     }
 }

@@ -54,6 +54,9 @@
                     <p>@note.Text</p>
 
                     @Html.ActionLink("Edit note", "Edit", "Note", new { id = note.NoteId})
+                    <div>
+                        <a onclick="RemoveNote(@note.NoteId)"> Remove </a>
+                    </div>
                 }
             }
         }
@@ -190,6 +193,15 @@
             var id = @Model.PostId
 
                 window.location.href = '@Url.Action("Delete", "Post")/' + id;
+        } else {
+
+        }
+    }
+
+    function RemoveNote(noteId) {
+        if (confirm('Verwijder Note?')) {
+
+            window.location.href = '@Url.Action("Delete", "Note")/' + noteId 
         } else {
 
         }
